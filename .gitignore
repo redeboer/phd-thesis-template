@@ -1,11 +1,6 @@
-.venv/
-.quarto/
-docs/.quarto/
-docs/_build/
-docs/*.aux
-docs/*.log
-docs/*.tex
 __pycache__/
-*.py[cod]
 .DS_Store
 .pixi/
+.quarto/
+.venv/
+*.py[cod]
