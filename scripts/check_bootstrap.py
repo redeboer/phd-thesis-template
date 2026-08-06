@@ -11,7 +11,6 @@ import tomllib
 from pathlib import Path
 
 PROFILES = ("general", "rub")
-MIN_MULTILINE_SEQUENCES = 2
 
 
 def main() -> None:
@@ -101,7 +100,7 @@ def bootstrap(root: Path, profile: str) -> None:
 
 
 def validate_repository(root: Path, profile: str) -> None:
-    """Validate files, Poe tasks, Quarto configuration, and HTML rendering."""
+    """Validate files, Pixi tasks, Quarto configuration, and HTML rendering."""
     for relative_path in (
         ".github/workflows/test-bootstrap.yml",
         "scripts",
@@ -110,24 +109,31 @@ def validate_repository(root: Path, profile: str) -> None:
             message = f"Bootstrap did not remove {relative_path} for {profile}"
             raise BootstrapRegressionError(message)
 
-    project_path = root / "pyproject.toml"
-    project_text = project_path.read_text(encoding="utf-8")
-    project = tomllib.loads(project_text)
-    tasks = project["tool"]["poe"]["tasks"]
-    doc_tasks = project["tool"]["poe"]["groups"]["doc"]["tasks"]
+    task_path = root / "pixi.toml"
+    task_text = task_path.read_text(encoding="utf-8")
+    tasks = tomllib.loads(task_text)["tasks"]
+    actual_doc = [
+        line.removeprefix("pixi run ").removesuffix(" &&")
+        for line in tasks["doc"]["cmd"].splitlines()
+        if line.startswith("pixi run ") and line != "pixi run test-filters"
+    ]
     expected_doc = ["html", "pdf", "epub", "paperback", "hardcover"]
     if profile == "general":
         expected_doc.extend(["rub", "html"])
-    assert_sequence(doc_tasks["doc"]["sequence"], expected_doc, profile, task="doc")
+    assert_sequence(actual_doc, expected_doc, profile, task="doc")
     assert_sequence(
-        tasks["all"]["sequence"], ["style", "linkcheck", "doc"], profile, task="all"
+        tasks["all"]["depends-on"],
+        ["style", "linkcheck", "doc"],
+        profile,
+        task="all",
     )
     for task in ("bootstrap", "test-bootstrap", "test-filters"):
         if task in tasks:
-            message = f"Template-only Poe task {task!r} remains for {profile}"
+            message = f"Template-only Pixi task {task!r} remains for {profile}"
             raise BootstrapRegressionError(message)
-    if project_text.count("sequence = [\n") < MIN_MULTILINE_SEQUENCES:
-        message = f"Poe sequences were not preserved as multiline arrays for {profile}"
+    expected_all = 'depends-on = [\n    "style",\n    "linkcheck",\n    "doc",\n]'
+    if expected_all not in task_text:
+        message = f"Pixi task dependencies were not preserved multiline for {profile}"
         raise BootstrapRegressionError(message)
 
     subprocess.run(
@@ -136,13 +142,13 @@ def validate_repository(root: Path, profile: str) -> None:
         cwd=root,
         stdout=subprocess.DEVNULL,
     )
-    subprocess.run(["uvx", "--from", "poethepoet", "poe", "html"], check=True, cwd=root)
+    subprocess.run(["pixi", "run", "html"], check=True, cwd=root)
 
 
 def assert_sequence(
     actual: list[str], expected: list[str], profile: str, *, task: str
 ) -> None:
-    """Require a generated Poe sequence to contain the expected items in order."""
+    """Require a generated Pixi sequence to contain the expected items in order."""
     if actual != expected:
         message = (
             f"Unexpected {task!r} sequence for {profile}: "

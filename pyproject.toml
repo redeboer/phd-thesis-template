@@ -14,6 +14,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "lychee-bin",
     "ruff",
     { include-group = "style" },
 ]
@@ -23,7 +24,7 @@ types = ["rich", "typer"]
 [tool.compwa.policy]
 dev-python-version = "3.13"
 doc-apt-packages = "texlive-fonts-recommended texlive-latex-extra texlive-luatex"
-package-manager = "uv"
+package-manager = "pixi+uv"
 
 [tool.compwa.policy.format]
 no-cspell-update = true
@@ -36,124 +37,6 @@ upgrade-frequency = "semiannually"
 
 [tool.compwa.policy.python]
 type-checker = ["ty"]
-
-[tool.poe.executor]
-isolated = true
-no-group = "dev"
-type = "uv"
-
-[tool.poe.groups.doc]
-heading = "Documentation"
-
-[tool.poe.groups.doc.tasks.doc]
-help = "Build every supported thesis format and test the Lua filters"
-sequence = [
-    "html",
-    "pdf",
-    "epub",
-    "paperback",
-    "hardcover",
-    "rub",
-    "html",
-    "test-filters",
-]
-
-[tool.poe.groups.doc.tasks.doclive]
-cmd = "quarto preview docs --no-clean --port 7000 --to=html"
-help = "Set up a server to directly preview changes to the HTML pages"
-
-[tool.poe.groups.doc.tasks.linkcheck]
-cmd = """
-lychee \
-    --extensions bib,css,html,lua,md,py,qmd,tex,toml,yaml,yml \
-    --include-fragments \
-    --no-progress \
-    .
-"""
-help = "Check links in the repository sources"
-executor = { with = "lychee-bin" }
-
-[tool.poe.tasks._render]
-cmd = "quarto render docs --no-clean --to=${format}"
-help = "Render the thesis in one output format"
-
-[[tool.poe.tasks._render.args]]
-default = "html"
-name = "format"
-positional = true
-type = "string"
-
-[tool.poe.tasks._upgrade-precommit]
-cmd = "pre-commit autoupdate -j8"
-executor = { type = "simple" }
-
-[tool.poe.tasks._upgrade-uv]
-cmd = "uv lock --upgrade"
-executor = { type = "simple" }
-
-[tool.poe.tasks.all]
-help = "Run all continuous integration (CI) tasks locally"
-sequence = [
-    "style",
-    "linkcheck",
-    "doc",
-    "test-bootstrap",
-    "test-filters",
-]
-
-[tool.poe.tasks.bootstrap]
-cmd = "scripts/bootstrap.py"
-executor = { type = "simple" }
-help = "Interactively configure a fresh general or RUB thesis checkout"
-
-[tool.poe.tasks.epub]
-help = "Build the thesis as an e-book"
-ref = "_render epub"
-
-[tool.poe.tasks.hardcover]
-cmd = "quarto render docs --no-clean --profile=hardcover --to=pdf"
-help = "Build a hardcover PDF with mirrored margins"
-
-[tool.poe.tasks.html]
-help = "Build the thesis website"
-ref = "_render html"
-
-[tool.poe.tasks.paperback]
-cmd = "quarto render docs --no-clean --profile=paperback --to=pdf"
-help = "Build a paperback PDF with mirrored margins"
-
-[tool.poe.tasks.pdf]
-help = "Build the screen-friendly thesis PDF"
-ref = "_render pdf"
-
-[tool.poe.tasks.rub]
-cmd = "quarto render docs --no-clean --profile=rub"
-help = "Build all formats with the optional RUB theme"
-
-[tool.poe.tasks.rub-hardcover]
-cmd = "quarto render docs --no-clean --profile=hardcover,rub --to=pdf"
-help = "Build a hardcover PDF with the optional RUB theme"
-
-[tool.poe.tasks.rub-paperback]
-cmd = "quarto render docs --no-clean --profile=paperback,rub --to=pdf"
-help = "Build a paperback PDF with the optional RUB theme"
-
-[tool.poe.tasks.style]
-cmd = "pre-commit run --all-files"
-help = "Run formatting, linting, spelling, and configuration checks"
-
-[tool.poe.tasks.test-filters]
-cmd = "python scripts/check_filters.py"
-help = "Check equation-reference rendering in HTML and LaTeX"
-
-[tool.poe.tasks.test-bootstrap]
-cmd = "python scripts/check_bootstrap.py"
-help = "Test the general and RUB bootstrap procedures"
-
-[tool.poe.tasks.upgrade]
-executor = { type = "simple" }
-help = "Upgrade lock files"
-parallel = ["_upgrade-precommit", "_upgrade-uv"]
 
 [tool.ruff]
 preview = true

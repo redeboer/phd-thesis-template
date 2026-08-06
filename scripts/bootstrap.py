@@ -202,16 +202,16 @@ def apply_answers(root: Path, answers: Answers) -> None:
     docs = root / "docs"
     main_path = docs / "_quarto.yml"
     main_text = configure_main(main_path, answers)
-    project_path = root / "pyproject.toml"
-    project_text = project_path.read_text(encoding="utf-8")
+    task_path = root / "pixi.toml"
+    task_text = task_path.read_text(encoding="utf-8")
     if answers.profile is Profile.RUB:
         rub_path = docs / "_quarto-rub.yml"
         configure_rub(rub_path, answers)
         main_text = apply_rub_configuration(main_text, main_path, answers)
-        project_text = configure_tasks_for_rub(project_path)
+        task_text = configure_tasks_for_rub(task_path)
         rub_path.unlink()
-    project_text = remove_template_tasks(project_text, project_path)
-    project_path.write_text(project_text, encoding="utf-8")
+    task_text = remove_template_tasks(task_text, task_path)
+    task_path.write_text(task_text, encoding="utf-8")
     main_path.write_text(main_text, encoding="utf-8")
     remove_template_files(root)
 
@@ -495,66 +495,62 @@ def configure_rub(path: Path, answers: Answers) -> str:
 
 
 def configure_tasks_for_rub(path: Path) -> str:
-    """Return Poe configuration whose standard tasks build the RUB thesis."""
+    """Return Pixi configuration whose standard tasks build the RUB thesis."""
     text = path.read_text(encoding="utf-8")
     old_sequence = dedent("""\
-    sequence = [
-        "html",
-        "pdf",
-        "epub",
-        "paperback",
-        "hardcover",
-        "rub",
-        "html",
-        "test-filters",
-    ]
+    pixi run html &&
+    pixi run pdf &&
+    pixi run epub &&
+    pixi run paperback &&
+    pixi run hardcover &&
+    pixi run rub &&
+    pixi run html &&
+    pixi run test-filters
     """)
     new_sequence = dedent("""\
-    sequence = [
-        "html",
-        "pdf",
-        "epub",
-        "paperback",
-        "hardcover",
-        "test-filters",
-    ]
+    pixi run html &&
+    pixi run pdf &&
+    pixi run epub &&
+    pixi run paperback &&
+    pixi run hardcover &&
+    pixi run test-filters
     """)
     text = replace_once(text, old_sequence, new_sequence, path)
     for task in ("rub", "rub-hardcover", "rub-paperback"):
-        pattern = re.compile(rf"\n\[tool\.poe\.tasks\.{task}\]\n.*?(?=\n\[)", re.DOTALL)
+        pattern = re.compile(rf"\n\[tasks\.{task}\]\n.*?(?=\n\[)", re.DOTALL)
         matches = pattern.findall(text)
         if len(matches) != 1:
             message = (
-                f"Expected one Poe task named {task!r} in {path}, found {len(matches)}"
+                f"Expected one Pixi task named {task!r} in {path}, found {len(matches)}"
             )
             raise RuntimeError(message)
         text = pattern.sub("", text, count=1)
     return text
 
 
-def remove_poe_task(text: str, path: Path, task: str) -> str:
-    """Remove one template-only Poe task."""
-    pattern = re.compile(rf"\n\[tool\.poe\.tasks\.{task}\]\n.*?(?=\n\[)", re.DOTALL)
+def remove_pixi_task(text: str, path: Path, task: str) -> str:
+    """Remove one template-only Pixi task."""
+    pattern = re.compile(rf"\n\[tasks\.{task}\]\n.*?(?=\n\[)", re.DOTALL)
     matches = pattern.findall(text)
     if len(matches) != 1:
         message = (
-            f"Expected one Poe task named {task!r} in {path}, found {len(matches)}"
+            f"Expected one Pixi task named {task!r} in {path}, found {len(matches)}"
         )
         raise RuntimeError(message)
     return pattern.sub("", text, count=1)
 
 
 def remove_sequence_item(text: str, path: Path, *, table: str, item: str) -> str:
-    """Remove one item from a multiline Poe sequence in a specific table."""
+    """Remove one item from a multiline Pixi sequence in a specific table."""
     table_pattern = re.compile(
-        rf"(?P<header>\[tool\.poe\.{re.escape(table)}\]\n)"
+        rf"(?P<header>\[{re.escape(table)}\]\n)"
         r"(?P<body>.*?)(?=\n\[|\Z)",
         re.DOTALL,
     )
     table_matches = list(table_pattern.finditer(text))
     if len(table_matches) != 1:
         message = (
-            f"Expected one Poe table {table!r} in {path}, found {len(table_matches)}"
+            f"Expected one Pixi table {table!r} in {path}, found {len(table_matches)}"
         )
         raise RuntimeError(message)
     match = table_matches[0]
@@ -563,7 +559,7 @@ def remove_sequence_item(text: str, path: Path, *, table: str, item: str) -> str
     count = body.count(item_line)
     if count != 1:
         message = (
-            f"Expected one sequence item {item!r} in Poe table {table!r} "
+            f"Expected one sequence item {item!r} in Pixi table {table!r} "
             f"in {path}, found {count}"
         )
         raise RuntimeError(message)
@@ -572,19 +568,14 @@ def remove_sequence_item(text: str, path: Path, *, table: str, item: str) -> str
 
 
 def remove_template_tasks(text: str, path: Path) -> str:
-    """Remove Poe tasks that only validate or configure the template."""
+    """Remove Pixi tasks that only validate or configure the template."""
     text = replace_once(
         text,
-        'help = "Build every supported thesis format and test the Lua filters"',
-        'help = "Build every supported thesis format"',
+        'description = "Build every supported thesis format and test the Lua filters"',
+        'description = "Build every supported thesis format"',
         path,
     )
-    text = remove_sequence_item(
-        text,
-        path,
-        table="groups.doc.tasks.doc",
-        item="test-filters",
-    )
+    text = replace_once(text, "pixi run test-filters\n", "", path)
     text = remove_sequence_item(
         text,
         path,
@@ -598,7 +589,7 @@ def remove_template_tasks(text: str, path: Path) -> str:
         item="test-filters",
     )
     for task in ("bootstrap", "test-bootstrap", "test-filters"):
-        text = remove_poe_task(text, path, task)
+        text = remove_pixi_task(text, path, task)
     return text
 
 

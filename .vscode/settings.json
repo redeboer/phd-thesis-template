@@ -47,6 +47,9 @@
   "cSpell.enabled": true,
   "diffEditor.experimental.showMoves": true,
   "editor.formatOnSave": true,
+  "files.associations": {
+    "**/pixi.lock": "yaml"
+  },
   "github-actions.workflows.pinned.workflows": [".github/workflows/ci.yml"],
   "gitlens.telemetry.enabled": false,
   "latex-workshop.formatting.latex": "latexindent",

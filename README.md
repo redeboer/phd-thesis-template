@@ -1,6 +1,7 @@
 # PhD thesis template
 
 [![Spelling checked](https://img.shields.io/badge/cspell-checked-brightgreen.svg)](https://github.com/streetsidesoftware/cspell/tree/main/packages/cspell)
+[![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![ty](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ty/main/assets/badge/v0.json)](https://github.com/astral-sh/ty)
@@ -15,34 +16,38 @@ A reusable [Quarto](https://quarto.org) book template for writing and publishing
 
 Click [**Use this template**](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) on GitHub, clone the resulting repository, and enter its directory.
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/). On macOS and Linux, the standalone installer is:
+Install [Pixi](https://pixi.sh/latest/installation) and [uv](https://docs.astral.sh/uv/getting-started/installation). On macOS and Linux, the standalone installer is:
 
 ```shell
+curl -fsSL https://pixi.sh/install.sh | sh
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 On Windows PowerShell, use:
 
+<!-- cspell:ignore useb -->
+
 ```powershell
+powershell -ExecutionPolicy ByPass -c "irm -useb https://pixi.sh/install.ps1 | iex"
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-Install the two development command-line tools into [uv-managed environments](https://docs.astral.sh/uv/concepts/tools/), [sync the locked thesis environment](https://docs.astral.sh/uv/concepts/projects/sync/), and start the guided configuration:
+Start the guided configuration:
 
 ```shell
-uv tool install poethepoet
 uv tool install pre-commit --with pre-commit-uv
+pixi install
 uv sync
-poe bootstrap
+pixi run bootstrap
 ```
 
-`uv tool install` makes the [`poe`](https://poethepoet.natn.io/) and [`pre-commit`](https://pre-commit.com/) commands available without modifying the system Python, while `uv sync` creates the project environment from `uv.lock`. The one-shot bootstrap CLI configures either the general thesis or the RUB variant, then removes template-only validation tooling. Run `poe bootstrap --help` for non-interactive options and review the result with `git diff`.
+Pixi installs native conda-forge dependencies and runs project tasks, while [uv](https://docs.astral.sh/uv/) creates the locked Python environment. The one-shot bootstrap CLI configures either the general thesis or the RUB variant, then removes template-only validation tooling. Run `pixi run bootstrap --help` for non-interactive options and review the result with `git diff`.
 
-After setup, replace the example chapters and front matter under `docs/`, add sources to `docs/references.bib`, and use [Quarto's citation syntax](https://quarto.org/docs/authoring/citations.html). Run `poe` to see the available tasks and their descriptions; `poe html` builds the website. [PDF rendering](https://quarto.org/docs/output-formats/pdf-engine.html) requires a TeX distribution, which Quarto can provide with `uv run quarto install tinytex`.
+After setup, replace the example chapters and front matter under `docs/`, add sources to `docs/references.bib`, and use [Quarto's citation syntax](https://quarto.org/docs/authoring/citations.html). Run `pixi task list` to see the available tasks; `pixi run html` builds the website. [PDF rendering](https://quarto.org/docs/output-formats/pdf-engine.html) requires a TeX distribution, which Quarto can provide with `uv run quarto install tinytex`.
 
 ## Optional RUB theme
 
-The template includes an optional [Ruhr University Bochum](https://www.ruhr-uni-bochum.de/en) [project profile](https://quarto.org/docs/projects/profiles.html). Selecting `rub` during bootstrap makes it the main configuration, so the standard Poe tasks build the RUB thesis. The general profile uses a supervisor and examiner; the RUB title page instead uses first and second examiners.
+The template includes an optional [Ruhr University Bochum](https://www.ruhr-uni-bochum.de/en) [project profile](https://quarto.org/docs/projects/profiles.html). Selecting `rub` during bootstrap makes it the main configuration, so the standard Pixi tasks build the RUB thesis. The general profile uses a supervisor and examiner; the RUB title page instead uses first and second examiners.
 
 > [!IMPORTANT]
 > The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://services.ruhr-uni-bochum.de/de/corporate-design-der-ruhr-universitaet-bochum). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.

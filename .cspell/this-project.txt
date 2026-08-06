@@ -27,6 +27,7 @@ Inlines
 ipykernel
 KOMA
 linkcheck
+librsvg
 linkcolor
 linspace
 luatex
@@ -39,7 +40,6 @@ orcid
 pandoc
 papersize
 Physik
-poethepoet
 polyfit
 pyplot
 pyproject
@@ -51,6 +51,7 @@ subdir
 texlive
 tinytex
 Typer
+useb
 urlcolor
 xlabel
 ylabel
