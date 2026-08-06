@@ -14,7 +14,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "lychee-bin",
     "ruff",
     { include-group = "style" },
 ]
@@ -72,6 +71,7 @@ lychee \
     .
 """
 help = "Check links in the repository sources"
+executor = { with = "lychee-bin" }
 
 [tool.poe.tasks._render]
 cmd = "quarto render docs --no-clean --to=${format}"
