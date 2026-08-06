@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date as calendar_date
@@ -591,6 +592,7 @@ def remove_template_files(root: Path) -> None:
     )
     for path in template_files:
         path.unlink()
+    shutil.rmtree(root / "scripts" / "__pycache__", ignore_errors=True)
     (root / "scripts").rmdir()
 
 

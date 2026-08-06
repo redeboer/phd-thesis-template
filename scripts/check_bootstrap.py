@@ -45,6 +45,9 @@ def copy_repository(source: Path, target: Path) -> None:
 
 def bootstrap(root: Path, profile: str) -> None:
     """Run the bootstrap command for one profile."""
+    cache = root / "scripts" / "__pycache__"
+    cache.mkdir()
+    (cache / "bootstrap.cpython-313.pyc").touch()
     arguments = [
         "uv",
         "run",
