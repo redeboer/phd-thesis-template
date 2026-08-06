@@ -112,14 +112,10 @@ def validate_repository(root: Path, profile: str) -> None:
     task_path = root / "pixi.toml"
     task_text = task_path.read_text(encoding="utf-8")
     tasks = tomllib.loads(task_text)["tasks"]
-    actual_doc = [
-        line.removeprefix("pixi run ").removesuffix(" &&")
-        for line in tasks["doc"]["cmd"].splitlines()
-        if line.startswith("pixi run ") and line != "pixi run test-filters"
-    ]
+    actual_doc = tasks["doc"]["depends-on"]
     expected_doc = ["html", "pdf", "epub", "paperback", "hardcover"]
     if profile == "general":
-        expected_doc.extend(["rub", "html"])
+        expected_doc.append("rub")
     assert_sequence(actual_doc, expected_doc, profile, task="doc")
     assert_sequence(
         tasks["all"]["depends-on"],

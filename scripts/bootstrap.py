@@ -497,25 +497,7 @@ def configure_rub(path: Path, answers: Answers) -> str:
 def configure_tasks_for_rub(path: Path) -> str:
     """Return Pixi configuration whose standard tasks build the RUB thesis."""
     text = path.read_text(encoding="utf-8")
-    old_sequence = dedent("""\
-    pixi run html &&
-    pixi run pdf &&
-    pixi run epub &&
-    pixi run paperback &&
-    pixi run hardcover &&
-    pixi run rub &&
-    pixi run html &&
-    pixi run test-filters
-    """)
-    new_sequence = dedent("""\
-    pixi run html &&
-    pixi run pdf &&
-    pixi run epub &&
-    pixi run paperback &&
-    pixi run hardcover &&
-    pixi run test-filters
-    """)
-    text = replace_once(text, old_sequence, new_sequence, path)
+    text = remove_sequence_item(text, path, table="tasks.doc", item="rub")
     for task in ("rub", "rub-hardcover", "rub-paperback"):
         pattern = re.compile(rf"\n\[tasks\.{task}\]\n.*?(?=\n\[)", re.DOTALL)
         matches = pattern.findall(text)
@@ -575,7 +557,12 @@ def remove_template_tasks(text: str, path: Path) -> str:
         'description = "Build every supported thesis format"',
         path,
     )
-    text = replace_once(text, "pixi run test-filters\n", "", path)
+    text = remove_sequence_item(
+        text,
+        path,
+        table="tasks.doc",
+        item="test-filters",
+    )
     text = remove_sequence_item(
         text,
         path,
