@@ -1,0 +1,230 @@
+[project]
+name = "phd-thesis"
+version = "0.1.0"
+description = "A Quarto template for a PhD thesis"
+requires-python = ">=3.12"
+license-files = ["LICENSE"]
+dependencies = [
+    "ipykernel",
+    "jupyter-cache",
+    "matplotlib",
+    "numpy",
+    "quarto-cli",
+]
+
+[dependency-groups]
+dev = [
+    "lychee-bin",
+    "ruff",
+    { include-group = "style" },
+]
+style = ["ty", { include-group = "types" }]
+types = ["rich", "typer"]
+
+[tool.compwa.policy]
+dev-python-version = "3.13"
+doc-apt-packages = "texlive-fonts-recommended texlive-latex-extra texlive-luatex"
+package-manager = "uv"
+
+[tool.compwa.policy.format]
+no-cspell-update = true
+
+[tool.compwa.policy.github]
+keep-workflow = ["upgrade.yml"]
+no-cd = true
+no-milestones = true
+upgrade-frequency = "semiannually"
+
+[tool.compwa.policy.python]
+type-checker = ["ty"]
+
+[tool.poe.executor]
+isolated = true
+no-group = "dev"
+type = "uv"
+
+[tool.poe.groups.doc]
+heading = "Documentation"
+
+[tool.poe.groups.doc.tasks.doc]
+help = "Build every supported thesis format and test the Lua filters"
+sequence = [
+    "html",
+    "pdf",
+    "epub",
+    "paperback",
+    "hardcover",
+    "rub",
+    "html",
+    "test-filters",
+]
+
+[tool.poe.groups.doc.tasks.doclive]
+cmd = "quarto preview docs --no-clean --port 7000 --to=html"
+help = "Set up a server to directly preview changes to the HTML pages"
+
+[tool.poe.groups.doc.tasks.linkcheck]
+cmd = """
+lychee \
+    --extensions bib,css,html,lua,md,py,qmd,tex,toml,yaml,yml \
+    --include-fragments \
+    --no-progress \
+    .
+"""
+help = "Check links in the repository sources"
+
+[tool.poe.tasks._render]
+cmd = "quarto render docs --no-clean --to=${format}"
+help = "Render the thesis in one output format"
+
+[[tool.poe.tasks._render.args]]
+default = "html"
+name = "format"
+positional = true
+type = "string"
+
+[tool.poe.tasks._upgrade-precommit]
+cmd = "pre-commit autoupdate -j8"
+executor = { type = "simple" }
+
+[tool.poe.tasks._upgrade-uv]
+cmd = "uv lock --upgrade"
+executor = { type = "simple" }
+
+[tool.poe.tasks.all]
+help = "Run all continuous integration (CI) tasks locally"
+sequence = [
+    "style",
+    "linkcheck",
+    "doc",
+    "test-bootstrap",
+    "test-filters",
+]
+
+[tool.poe.tasks.bootstrap]
+cmd = "scripts/bootstrap.py"
+executor = { type = "simple" }
+help = "Interactively configure a fresh general or RUB thesis checkout"
+
+[tool.poe.tasks.epub]
+help = "Build the thesis as an e-book"
+ref = "_render epub"
+
+[tool.poe.tasks.hardcover]
+cmd = "quarto render docs --no-clean --profile=hardcover --to=pdf"
+help = "Build a hardcover PDF with mirrored margins"
+
+[tool.poe.tasks.html]
+help = "Build the thesis website"
+ref = "_render html"
+
+[tool.poe.tasks.paperback]
+cmd = "quarto render docs --no-clean --profile=paperback --to=pdf"
+help = "Build a paperback PDF with mirrored margins"
+
+[tool.poe.tasks.pdf]
+help = "Build the screen-friendly thesis PDF"
+ref = "_render pdf"
+
+[tool.poe.tasks.rub]
+cmd = "quarto render docs --no-clean --profile=rub"
+help = "Build all formats with the optional RUB theme"
+
+[tool.poe.tasks.rub-hardcover]
+cmd = "quarto render docs --no-clean --profile=hardcover,rub --to=pdf"
+help = "Build a hardcover PDF with the optional RUB theme"
+
+[tool.poe.tasks.rub-paperback]
+cmd = "quarto render docs --no-clean --profile=paperback,rub --to=pdf"
+help = "Build a paperback PDF with the optional RUB theme"
+
+[tool.poe.tasks.style]
+cmd = "pre-commit run --all-files"
+help = "Run formatting, linting, spelling, and configuration checks"
+
+[tool.poe.tasks.test-filters]
+cmd = "python scripts/check_filters.py"
+help = "Check equation-reference rendering in HTML and LaTeX"
+
+[tool.poe.tasks.test-bootstrap]
+cmd = "python scripts/check_bootstrap.py"
+help = "Test the general and RUB bootstrap procedures"
+
+[tool.poe.tasks.upgrade]
+executor = { type = "simple" }
+help = "Upgrade lock files"
+parallel = ["_upgrade-precommit", "_upgrade-uv"]
+
+[tool.ruff]
+preview = true
+show-fixes = true
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+
+[tool.ruff.lint]
+ignore = [
+    "DOC",
+    "PTH",
+    "any-type",
+    "if-else-block-instead-of-if-exp",
+    "incorrect-blank-line-before-class",
+    "line-too-long",
+    "logging-f-string",
+    "missing-copyright-notice",
+    "missing-dashed-underline-after-section",
+    "missing-section-name-colon",
+    "missing-trailing-comma",
+    "multi-line-summary-second-line",
+    "non-empty-init-module",
+    "pytest-fixture-incorrect-parentheses-style",
+    "read-whole-file",
+    "reimplemented-starmap",
+    "single-line-implicit-string-concatenation",
+    "undocumented-magic-method",
+    "undocumented-public-class",
+    "undocumented-public-function",
+    "undocumented-public-init",
+    "undocumented-public-method",
+    "unspecified-encoding",
+    "write-whole-file"
+]
+select = ["ALL"]
+task-tags = ["cspell"]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
+
+[tool.ruff.lint.per-file-ignores]
+"docs/*" = [
+    "assert",
+    "implicit-namespace-package",
+    "request-without-timeout",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.tombi.files]
+exclude = ["**/uv.lock"]
+
+[tool.tombi.format.rules]
+indent-width = 4
+line-width = 88
+
+[tool.tombi.lint.rules]
+key-empty = "off"
+
+[[tool.tombi.schemas]]
+root = "tool.compwa.policy"
+path = "https://raw.githubusercontent.com/ComPWA/policy/0.9.3/compwa-policy.schema.json"
+include = ["pyproject.toml"]
+
+[tool.ty.rules]
+division-by-zero = "warn"
+possibly-missing-import = "warn"
+possibly-unresolved-reference = "warn"
+
+[tool.ty.terminal]
+error-on-warning = true

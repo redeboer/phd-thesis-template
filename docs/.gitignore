@@ -1,0 +1,9 @@
+*.html
+*.toc
+**/*.quarto_ipynb
+**/*.quarto_ipynb*
+**/.jupyter_cache/
+**/*_files/
+/.quarto/
+/*.pdf
+site_libs/

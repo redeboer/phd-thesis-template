@@ -1,0 +1,100 @@
+project:
+  type: book
+  output-dir: _build/html
+
+thesis:
+  degree: Doctor of Philosophy
+  institution: &institution Your University
+  department: &department Your Department
+  city: &city Your City
+  country: &country Your Country
+  supervisor: Prof. Supervisor Name
+  examiner: Prof. Examiner Name
+  defence-date: TBA
+
+book:
+  title: "Your Thesis Title"
+  subtitle: "A concise description of your research"
+  author:
+    - name:
+        given: Your
+        family: Name
+      affiliations:
+        - name: *institution
+          department: *department
+          city: *city
+          country: *country
+      orcid: 0000-0000-0000-0000
+  date: today
+  date-format: MMMM YYYY
+  description: PhD thesis
+  chapters:
+    - index.qmd
+    - chapters/introduction.qmd
+    - chapters/background.qmd
+    - chapters/methods.qmd
+    - chapters/results.qmd
+    - chapters/conclusion.qmd
+    - references.qmd
+  output-file: thesis
+  page-navigation: true
+  reader-mode: true
+  repo-url: https://github.com/USERNAME/REPOSITORY
+  repo-subdir: docs
+  repo-actions: [source, issue]
+  site-url: https://USERNAME.github.io/REPOSITORY
+
+bibliography: references.bib
+csl: ieee.csl
+link-citations: true
+
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    css: styles.css
+    toc: true
+    respect-user-color-scheme: true
+    tbl-cap-location: bottom
+  pdf:
+    documentclass: scrbook
+    classoption:
+      - numbers=endperiod
+      - open=any
+      - twoside=semi
+    papersize: a4
+    fontsize: 11pt
+    geometry:
+      - inner=2.5cm
+      - outer=2.5cm
+      - top=2.5cm
+      - bottom=2.5cm
+      - headsep=20pt
+      - headheight=14pt
+      - footskip=30pt
+      - includeheadfoot
+      - heightrounded
+    include-in-header: preamble/configuration.tex
+    include-before-body:
+      - frontmatter/abstract.tex
+      - frontmatter/acknowledgements.tex
+      - preamble/toc.tex
+    keep-tex: true
+    number-depth: 2
+    toc: false
+    tbl-cap-location: bottom
+    template-partials:
+      - preamble/before-body.tex
+  epub:
+    toc: true
+
+execute:
+  cache: true
+  enabled: true
+
+fig-format: svg
+filters:
+  - quarto
+  - filters/eqref.lua
+number-depth: 2

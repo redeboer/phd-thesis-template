@@ -1,0 +1,5 @@
+# Introduction {.unnumbered}
+
+Introduce the research problem, its significance, and the central contribution of the thesis. End the chapter with a short roadmap of the chapters that follow.
+
+This template supports cross-references such as @sec-background and citations such as [@example2024].

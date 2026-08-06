@@ -1,0 +1,102 @@
+{
+  "[bibtex]": {
+    "editor.formatOnSave": false
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[git-commit]": {
+    "editor.rulers": [72],
+    "rewrap.wrappingColumn": 72
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.wordWrap": "on"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[latex]": {
+    "editor.defaultFormatter": "James-Yu.latex-workshop",
+    "editor.wordWrap": "bounded"
+  },
+  "[lua]": {
+    "editor.defaultFormatter": "sumneko.lua"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "[quarto]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[toml]": {
+    "editor.defaultFormatter": "tombi-toml.tombi"
+  },
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cSpell.enabled": true,
+  "diffEditor.experimental.showMoves": true,
+  "editor.formatOnSave": true,
+  "github-actions.workflows.pinned.workflows": [".github/workflows/ci.yml"],
+  "gitlens.telemetry.enabled": false,
+  "latex-workshop.formatting.latex": "latexindent",
+  "latex-workshop.latex.autoClean.run": "onSucceeded",
+  "latex-workshop.latex.clean.fileTypes": [
+    "%DOCFILE%.aux",
+    "%DOCFILE%.dvi",
+    "%DOCFILE%.log",
+    "%DOCFILE%.synctex",
+    "%DOCFILE%.synctex.gz"
+  ],
+  "latex-workshop.latex.clean.method": "glob",
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "tikz",
+      "tools": ["lualatex"]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "args": ["-interaction=nonstopmode", "-file-line-error", "%DOC%"],
+      "command": "lualatex",
+      "name": "lualatex"
+    }
+  ],
+  "livePreview.defaultPreviewPath": "docs/_build/html",
+  "multiDiffEditor.experimental.enabled": true,
+  "notebook.codeActionsOnSave": {
+    "notebook.source.organizeImports": "explicit"
+  },
+  "notebook.formatOnSave.enabled": true,
+  "prettier.documentSelectors": ["**/*.qmd"],
+  "python.defaultInterpreterPath": ".venv/bin/python",
+  "python.terminal.activateEnvironment": false,
+  "quarto.path": ".venv/bin/quarto",
+  "redhat.telemetry.enabled": false,
+  "rewrap.wrappingColumn": 88,
+  "ruff.enable": true,
+  "ruff.importStrategy": "fromEnvironment",
+  "ruff.organizeImports": true,
+  "search.exclude": {
+    "**/*.svg": true,
+    "**/uv.lock": true
+  },
+  "telemetry.telemetryLevel": "off",
+  "ty.completions.autoImport": false,
+  "ty.diagnosticMode": "workspace",
+  "ty.importStrategy": "fromEnvironment",
+  "xml.format.preserveAttributeLineBreaks": false,
+  "yaml.schemas": {
+    "https://citation-file-format.github.io/1.2.0/schema.json": "CITATION.cff"
+  }
+}

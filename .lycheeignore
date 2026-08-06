@@ -1,0 +1,2 @@
+^https://github\.com/(?:USERNAME/REPOSITORY|%7Banswers\.repository%7D)(?:/|$)
+^https://username\.github\.io/REPOSITORY(?:/|$)

@@ -1,0 +1,28 @@
+book:
+  description: PhD thesis, Ruhr University Bochum
+  output-file: thesis-rub
+  navbar:
+    background: "#003560"
+    foreground: "#e7e7e7"
+    logo: themes/rub/images/rub-white.svg
+  sidebar:
+    logo: themes/rub/images/rub-text.svg
+
+rub-theme: true
+
+thesis:
+  degree: Doktors der Naturwissenschaften
+  faculty: Fakultät für Physik und Astronomie
+  first-examiner: Prof. Dr. First Examiner
+  second-examiner: Prof. Dr. Second Examiner
+  defence-date: TBA
+
+format:
+  html:
+    css:
+      - styles.css
+      - themes/rub/styles.css
+  pdf:
+    include-in-header:
+      - preamble/configuration.tex
+      - themes/rub/configuration.tex

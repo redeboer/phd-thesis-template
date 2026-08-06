@@ -1,0 +1,12 @@
+# Introduction {#sec-introduction}
+
+State the motivation, research questions, scope, and original contributions of the thesis.
+
+## Research questions
+
+1. What is the main question addressed by this thesis?
+2. Which gap in existing knowledge does it fill?
+
+## Contributions
+
+Summarise the contributions in a form that can be revisited in the conclusion.
