@@ -43,10 +43,10 @@ book:
   output-file: thesis
   page-navigation: true
   reader-mode: true
-  repo-url: https://github.com/USERNAME/REPOSITORY
+  repo-url: https://github.com/redeboer/phd-thesis-template
   repo-subdir: docs
   repo-actions: [source, issue]
-  site-url: https://USERNAME.github.io/REPOSITORY
+  site-url: https://redeboer.github.io/phd-thesis-template
 
 bibliography: references.bib
 csl: ieee.csl

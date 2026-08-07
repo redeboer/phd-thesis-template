@@ -16,6 +16,7 @@ GIVEN_NAME = "Ada"
 FAMILY_NAME = "Lovelace"
 AUTHOR = f"{GIVEN_NAME} {FAMILY_NAME}"
 TEMPLATE_AUTHOR = "Remco de Boer"
+TEMPLATE_REPOSITORY = "redeboer/phd-thesis-template"
 
 
 def main() -> None:
@@ -155,6 +156,7 @@ def validate_repository(root: Path, profile: str) -> None:
     if expected_all not in task_text:
         message = f"Pixi task dependencies were not preserved multiline for {profile}"
         raise BootstrapRegressionError(message)
+    validate_index(root, profile)
     validate_license(root, profile)
     if profile == "general":
         validate_rub_removal(root)
@@ -169,6 +171,17 @@ def validate_repository(root: Path, profile: str) -> None:
     )
     subprocess.run(["uv", "run", "ruff", "check", "."], check=True, cwd=root)
     subprocess.run(["pixi", "run", "html"], check=True, cwd=root)
+
+
+def validate_index(root: Path, profile: str) -> None:
+    """Require the landing page to be a preface instead of a template description."""
+    text = (root / "docs" / "index.qmd").read_text(encoding="utf-8").lower()
+    for term in ("template", TEMPLATE_REPOSITORY):
+        if term in text:
+            message = (
+                f"Template mention {term!r} remains in docs/index.qmd for {profile}"
+            )
+            raise BootstrapRegressionError(message)
 
 
 def validate_license(root: Path, profile: str) -> None:

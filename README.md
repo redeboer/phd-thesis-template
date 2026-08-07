@@ -9,6 +9,8 @@
 
 A reusable [Quarto](https://quarto.org) book template for writing and publishing a PhD thesis. It is based on the structure of [`redeboer/phd-thesis`](https://github.com/redeboer/phd-thesis), with the thesis-specific prose, figures, branding, and scientific dependencies removed.
 
+The template builds itself with placeholder content, so its own output is a live example of what you get: <https://redeboer.github.io/phd-thesis-template>.
+
 > [!NOTE]
 > This template is intended to remain compatible with Quarto v1. Quarto v2 is being developed separately in [`quarto-dev/q2`](https://github.com/quarto-dev/q2), and is not currently a compatibility target.
 

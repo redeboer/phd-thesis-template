@@ -33,6 +33,19 @@ RUB_CONDITIONALS = 2
 """Number of ``rub-theme`` conditionals in ``docs/preamble/before-body.tex``."""
 TEMPLATE_AUTHOR = "Remco de Boer"
 """Author in the copyright line of ``LICENSE`` of the pristine template."""
+TEMPLATE_REPOSITORY = "redeboer/phd-thesis-template"
+"""GitHub repository that the pristine template links to and is published from."""
+TEMPLATE_INDEX_HEADING = "# About this template {.unnumbered}"
+"""Heading of the landing page of the pristine template, ``docs/index.qmd``."""
+THESIS_INDEX = """\
+# Preface {.unnumbered}
+
+Address the reader before the thesis proper begins: describe the context in which
+the work was carried out, the intended audience, and any reading guidance. This page
+is the landing page of the thesis website and the first page of the PDF, so keep it
+short or replace it with a short summary of the thesis.
+"""
+"""Landing page written by :func:`configure_index` for a bootstrapped thesis."""
 
 
 def bootstrap(  # ruff: ignore[too-many-arguments, too-many-positional-arguments]
@@ -225,6 +238,7 @@ def apply_answers(root: Path, answers: Answers) -> None:
         docs / "preamble" / "before-body.tex",
         keep_rub=answers.profile is Profile.RUB,
     )
+    configure_index(docs / "index.qmd")
     configure_documentation(root / "README.md", answers.profile)
     configure_license(root / "LICENSE", answers)
     task_text = remove_rub_tasks(task_text, task_path)
@@ -317,6 +331,8 @@ def validate_date(
 def configure_main(path: Path, answers: Answers) -> str:
     """Return shared thesis metadata with placeholders replaced."""
     text = path.read_text(encoding="utf-8")
+    template_owner, template_name = TEMPLATE_REPOSITORY.split("/", maxsplit=1)
+    owner, name = answers.repository.split("/", maxsplit=1)
     subtitle = (
         indent(
             dedent(f"""\
@@ -371,8 +387,8 @@ def configure_main(path: Path, answers: Answers) -> str:
             "      ",
         ): orcid,
         "date: today": f"date: {yaml_string(answers.date)}",
-        "https://github.com/USERNAME/REPOSITORY": f"https://github.com/{answers.repository}",
-        "https://USERNAME.github.io/REPOSITORY": f"https://{answers.repository.split('/', maxsplit=1)[0]}.github.io/{answers.repository.split('/', maxsplit=1)[1]}",
+        f"https://github.com/{TEMPLATE_REPOSITORY}": f"https://github.com/{answers.repository}",
+        f"https://{template_owner}.github.io/{template_name}": f"https://{owner}.github.io/{name}",
     }
     for old, new in replacements.items():
         text = replace_once(text, old, new, path)
@@ -635,6 +651,20 @@ def select_branches(lines: list[str], *, keep_rub: bool) -> tuple[list[str], int
         if keeping:
             kept.append(line)
     return kept, depth, found
+
+
+def configure_index(path: Path) -> None:
+    """Replace the landing page about the template with a preface for the thesis.
+
+    The pristine landing page explains what the template is to visitors of its
+    published website. That explanation is meaningless in a bootstrapped thesis, so
+    the whole page is rewritten instead of having its placeholders substituted.
+    """
+    text = path.read_text(encoding="utf-8")
+    if TEMPLATE_INDEX_HEADING not in text:
+        message = f"Expected the template landing page {TEMPLATE_INDEX_HEADING!r} in {path}. Has this repository already been bootstrapped?"
+        raise RuntimeError(message)
+    path.write_text(THESIS_INDEX, encoding="utf-8")
 
 
 def configure_documentation(path: Path, profile: Profile) -> None:

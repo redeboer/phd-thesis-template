@@ -38,10 +38,8 @@ upgrade-frequency = "semiannually"
 type-checker = ["ty"]
 
 [tool.lychee]
-exclude = [
-    "^https://(?:github|username)/$",  # truncated URLs extracted from these patterns
-    "^https://github\\.com/(?:USERNAME/REPOSITORY|%7Banswers\\.repository%7D)(?:/|$)",
-    "^https://username\\.github\\.io/REPOSITORY(?:/|$)",
+exclude_path = [
+    "scripts/bootstrap.py",
 ]
 extensions = [
     "bib",

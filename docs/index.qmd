@@ -1,5 +1,30 @@
-# Introduction {.unnumbered}
+# About this template {.unnumbered}
 
-Introduce the research problem, its significance, and the central contribution of the thesis. End the chapter with a short roadmap of the chapters that follow.
+::: {.callout-note}
 
-This template supports cross-references such as @sec-background and citations such as [@example2024].
+## This is a template, not a thesis
+
+This website is built from [`redeboer/phd-thesis-template`](https://github.com/redeboer/phd-thesis-template), a reusable [Quarto](https://quarto.org) book template for writing and publishing a PhD thesis. Every chapter, title, and author name you see here is placeholder text that a real thesis replaces. It is kept in the repository so that the template stays continuously buildable and so that you can inspect the result before adopting it.
+:::
+
+The template provides the parts of a thesis that are the same for everyone: a book structure with front matter, an HTML website, three PDF variants, an ePub edition, bibliography and cross-reference handling, executable code cells, and a continuous-integration setup that publishes the website to GitHub Pages. It is derived from [`redeboer/phd-thesis`](https://github.com/redeboer/phd-thesis), with the thesis-specific prose, figures, branding, and scientific dependencies removed.
+
+## What the example chapters show
+
+The chapters in the sidebar are a tour of the authoring features, not a narrative:
+
+- @sec-introduction and @sec-conclusion sketch the expected structure of those chapters.
+- @sec-background contains a labelled equation, @eq-mass-energy, demonstrating numbered equation cross-references in both HTML and LaTeX.
+- @sec-methods embeds an [executable Python cell](https://quarto.org/docs/computations/python.html) whose figure and numbers are generated during the build and cached between runs. It also demonstrates folded code, hidden input, and format-dependent output.
+- @sec-results shows a cross-referenced table, @tbl-example.
+- The [References](references.qmd) page collects citations such as [@example2024], rendered from `docs/references.bib` through a [CSL style](https://quarto.org/docs/authoring/citations.html).
+
+The same sources produce the downloadable PDF and ePub editions, including paperback and hardcover PDFs with mirrored margins, and an optional [Ruhr University Bochum](https://www.ruhr-uni-bochum.de/en) theme.
+
+## Starting your own thesis
+
+1. Click [**Use this template**](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) on the [repository page](https://github.com/redeboer/phd-thesis-template) and clone the result.
+2. Install [Pixi](https://pixi.sh/latest/installation) and [uv](https://docs.astral.sh/uv/getting-started/installation), then run `pixi run bootstrap`. The guided configuration asks for your title, author details, institution, and repository, writes them into the Quarto configuration, and removes the template-only tooling.
+3. Replace the example chapters and front matter under `docs/`, add your sources to `docs/references.bib`, and run `pixi run doclive` to preview while you write.
+
+The [README](https://github.com/redeboer/phd-thesis-template/blob/main/README.md) covers installation, the available build tasks, and publishing in more detail. After bootstrapping, this page becomes the preface of your own thesis.
