@@ -23,7 +23,6 @@ types = ["rich", "typer"]
 
 [tool.compwa.policy]
 dev-python-version = "3.13"
-doc-apt-packages = "texlive-fonts-recommended texlive-latex-extra texlive-luatex"
 package-manager = "pixi+uv"
 
 [tool.compwa.policy.format]
