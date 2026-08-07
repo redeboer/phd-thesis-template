@@ -46,6 +46,7 @@ description = "Build the thesis as an e-book"
 
 [tasks.hardcover]
 cmd = "uv run quarto render docs --no-clean --profile=hardcover --to=pdf"
+depends-on = ["_tinytex"]
 description = "Build a hardcover PDF with mirrored margins"
 
 [tasks.html]
@@ -64,22 +65,27 @@ description = "Check links in the repository sources"
 
 [tasks.paperback]
 cmd = "uv run quarto render docs --no-clean --profile=paperback --to=pdf"
+depends-on = ["_tinytex"]
 description = "Build a paperback PDF with mirrored margins"
 
 [tasks.pdf]
 cmd = "uv run quarto render docs --no-clean --to=pdf"
+depends-on = ["_tinytex"]
 description = "Build the screen-friendly thesis PDF"
 
 [tasks.rub]
 cmd = "uv run quarto render docs --no-clean --profile=rub"
+depends-on = ["_tinytex"]
 description = "Build all formats with the optional RUB theme"
 
 [tasks.rub-hardcover]
 cmd = "uv run quarto render docs --no-clean --profile=hardcover,rub --to=pdf"
+depends-on = ["_tinytex"]
 description = "Build a hardcover PDF with the optional RUB theme"
 
 [tasks.rub-paperback]
 cmd = "uv run quarto render docs --no-clean --profile=paperback,rub --to=pdf"
+depends-on = ["_tinytex"]
 description = "Build a paperback PDF with mirrored margins"
 
 [tasks.style]
@@ -101,6 +107,9 @@ depends-on = [
     "_upgrade-uv",
 ]
 description = "Upgrade all lock files"
+
+[tasks._tinytex]
+cmd = "uv run python scripts/install_tinytex.py"
 
 [tasks._upgrade-pixi]
 cmd = "pixi update"

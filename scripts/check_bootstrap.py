@@ -106,11 +106,18 @@ def validate_repository(root: Path, profile: str) -> None:
     """Validate files, Pixi tasks, Quarto configuration, and HTML rendering."""
     for relative_path in (
         ".github/workflows/test-bootstrap.yml",
-        "scripts",
+        "scripts/__init__.py",
+        "scripts/__pycache__",
+        "scripts/bootstrap.py",
+        "scripts/check_bootstrap.py",
+        "scripts/check_filters.py",
     ):
         if (root / relative_path).exists():
             message = f"Bootstrap did not remove {relative_path} for {profile}"
             raise BootstrapRegressionError(message)
+    if not (root / "scripts" / "install_tinytex.py").exists():
+        message = f"Bootstrap removed scripts/install_tinytex.py for {profile}"
+        raise BootstrapRegressionError(message)
 
     task_path = root / "pixi.toml"
     task_text = task_path.read_text(encoding="utf-8")

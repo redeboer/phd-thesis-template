@@ -605,7 +605,11 @@ def remove_template_tasks(text: str, path: Path) -> str:
 
 
 def remove_template_files(root: Path) -> None:
-    """Remove scripts and CI that exist only to validate the template."""
+    """Remove scripts and CI that exist only to validate the template.
+
+    The ``scripts`` directory itself is kept, because ``scripts/install_tinytex.py``
+    remains in use by the PDF tasks of a bootstrapped thesis.
+    """
     template_files = (
         root / ".github" / "workflows" / "test-bootstrap.yml",
         root / "scripts" / "__init__.py",
@@ -616,7 +620,6 @@ def remove_template_files(root: Path) -> None:
     for path in template_files:
         path.unlink()
     shutil.rmtree(root / "scripts" / "__pycache__", ignore_errors=True)
-    (root / "scripts").rmdir()
 
 
 def require_rub_answers(answers: Answers) -> RubAnswers:

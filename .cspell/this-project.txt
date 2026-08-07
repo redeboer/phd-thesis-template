@@ -26,10 +26,11 @@ inlines
 Inlines
 ipykernel
 KOMA
-linkcheck
 librsvg
+linkcheck
 linkcolor
 linspace
+lualatex
 luatex
 MAINT
 matplotlib
@@ -39,6 +40,7 @@ numpy
 orcid
 pandoc
 papersize
+pdflatex
 Physik
 polyfit
 pyplot
@@ -51,7 +53,7 @@ subdir
 texlive
 tinytex
 Typer
-useb
 urlcolor
+useb
 xlabel
 ylabel

@@ -43,7 +43,7 @@ pixi run bootstrap
 
 Pixi installs native conda-forge dependencies and runs project tasks, while [uv](https://docs.astral.sh/uv/) creates the locked Python environment. The one-shot bootstrap CLI configures either the general thesis or the RUB variant, then removes template-only validation tooling. Run `pixi run bootstrap --help` for non-interactive options and review the result with `git diff`.
 
-After setup, replace the example chapters and front matter under `docs/`, add sources to `docs/references.bib`, and use [Quarto's citation syntax](https://quarto.org/docs/authoring/citations.html). Run `pixi task list` to see the available tasks; `pixi run html` builds the website. [PDF rendering](https://quarto.org/docs/output-formats/pdf-engine.html) requires a TeX distribution, which Quarto can provide with `uv run quarto install tinytex`.
+After setup, replace the example chapters and front matter under `docs/`, add sources to `docs/references.bib`, and use [Quarto's citation syntax](https://quarto.org/docs/authoring/citations.html). Run `pixi task list` to see the available tasks; `pixi run html` builds the website. [PDF rendering](https://quarto.org/docs/output-formats/pdf-engine.html) requires a TeX distribution: the PDF tasks install TinyTeX through Quarto on first run if no TeX engine is found.
 
 ## Optional RUB theme
 
