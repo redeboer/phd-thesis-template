@@ -1,0 +1,17 @@
+:root {
+  --thesis-accent: #24527a;
+}
+
+a,
+.nav-link.active,
+.sidebar-link.active {
+  color: var(--thesis-accent);
+}
+
+.quarto-figure-center {
+  margin-bottom: 2px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}

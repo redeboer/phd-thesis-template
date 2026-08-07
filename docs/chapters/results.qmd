@@ -1,0 +1,11 @@
+# Results {#sec-results}
+
+Present the results in the order needed to answer the research questions. Keep interpretation distinct from measurement where that helps clarity.
+
+| Quantity | Value | Uncertainty |
+| :------- | ----: | ----------: |
+| Example  |  1.23 |        0.04 |
+
+: A sample table. {#tbl-example}
+
+Refer to it as @tbl-example.

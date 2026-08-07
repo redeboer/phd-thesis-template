@@ -1,0 +1,5 @@
+*.code-snippets
+LICENSE
+docs/chapters/background.qmd
+docs/includes/*.qmd
+pixi.lock

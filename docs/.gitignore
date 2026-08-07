@@ -1,0 +1,13 @@
+_build/
+*.aux
+*.html
+*.log
+*.tex
+*.toc
+**/.jupyter_cache/
+**/*_files/
+**/*.quarto_ipynb
+**/*.quarto_ipynb*
+/.quarto/
+/*.pdf
+site_libs/

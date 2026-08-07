@@ -1,0 +1,60 @@
+{
+  "allowCompoundWords": false,
+  "dictionaries": ["latex", "this-project"],
+  "dictionaryDefinitions": [
+    {
+      "addWords": true,
+      "name": "forbid-american-english",
+      "path": "./.cspell/forbid-american-english.txt"
+    },
+    {
+      "addWords": true,
+      "name": "forbid-british-english",
+      "path": "./.cspell/forbid-british-english.txt"
+    },
+    {
+      "addWords": true,
+      "name": "this-project",
+      "path": "./.cspell/this-project.txt"
+    }
+  ],
+  "enableFiletypes": [
+    "git-commit",
+    "github-actions-workflow",
+    "julia",
+    "jupyter"
+  ],
+  "ignorePaths": [
+    "**/*.bib",
+    "**/.cspell.json",
+    "**/.cspell/**",
+    "*.csl",
+    ".editorconfig",
+    ".envrc",
+    ".github/dependabot.yml",
+    ".github/workflows/test-bootstrap.yml",
+    ".gitignore",
+    ".pre-commit-config.yaml",
+    ".prettierignore",
+    ".vscode/*",
+    "docs/preamble/before-body.tex",
+    "docs/themes/**/*.svg",
+    "LICENSE",
+    "pyproject.toml"
+  ],
+  "language": "en-GB",
+  "overrides": [
+    {
+      "dictionaries": ["forbid-american-english"],
+      "filename": "**/*.{md,qmd,tex}",
+      "language": "en-GB"
+    },
+    {
+      "dictionaries": ["forbid-british-english"],
+      "filename": "**/*.{css,json,lua,py,toml,yaml,yml}",
+      "language": "en-US"
+    }
+  ],
+  "useGitignore": true,
+  "version": "0.2"
+}

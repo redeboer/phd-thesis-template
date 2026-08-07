@@ -1,0 +1,15 @@
+book:
+  output-file: thesis-paperback
+format:
+  pdf:
+    classoption: [numbers=endperiod, open=right, twoside]
+    geometry:
+      - inner=3cm
+      - outer=2cm
+      - top=2.5cm
+      - bottom=2.5cm
+      - includeheadfoot
+      - heightrounded
+    citecolor: black
+    linkcolor: black
+    urlcolor: black

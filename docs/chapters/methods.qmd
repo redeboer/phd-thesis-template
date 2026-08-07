@@ -1,0 +1,62 @@
+---
+format:
+  html:
+    code-fold: true
+    code-tools: true
+  pdf:
+    execute:
+      echo: false
+---
+
+# Methods {#sec-methods}
+
+Describe the research design, data, apparatus, software, and analysis choices in enough detail for the work to be assessed and reproduced.
+
+## Reproducible computations
+
+Executable Python, Julia, or R cells can be placed directly in `.qmd` files. Add the corresponding runtime dependencies to `pyproject.toml`, use a fixed seed for stochastic calculations, and expose the relevant inputs alongside the results.
+
+The following example creates a small synthetic dataset and fits a straight line. Quarto executes the cell while rendering the thesis and caches its output.
+
+```{python}
+#| label: fit-example
+#| code-fold: false
+#| output: false
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+rng = np.random.default_rng(seed=2026)
+x = np.linspace(0, 10, 25)
+y = 1.8 * x + 2.5 + rng.normal(scale=1.5, size=x.size)
+slope, intercept = np.polyfit(x, y, deg=1)
+```
+
+The fitted value can also be inserted into the prose as generated Markdown instead of being copied manually:
+
+```{python}
+#| echo: false
+
+from IPython.display import Markdown
+
+Markdown(f"The fitted slope is **{slope:.2f}**.")
+```
+
+```{python}
+#| label: fig-runtime-example
+#| code-summary: "Show the plotting code"
+#| fig-cap: "Synthetic observations and the fitted straight-line model. The fixed random seed makes the figure reproducible."
+#| fig-alt: "Scatter plot of synthetic observations with an ascending fitted line."
+
+figure, axis = plt.subplots(figsize=(6.4, 4.0))
+axis.scatter(x, y, label="Synthetic observations")
+axis.plot(x, slope * x + intercept, label="Linear fit")
+axis.set(xlabel="Independent variable", ylabel="Measured response")
+axis.legend()
+figure.tight_layout()
+plt.show()
+```
+
+The generated output can be cited like any static asset; for example, @fig-runtime-example shows the result of the calculation above. In a real thesis, the same pattern can generate analysis tables and publication figures directly from the source data.
+
+This page deliberately demonstrates several presentation modes. The setup cell shows its input but suppresses output, the generated sentence hides its input with `echo: false`, the plotting cell is folded in HTML with a custom summary, the page-level code tools allow readers to reveal or inspect source, and the PDF build hides all cell input while retaining results.

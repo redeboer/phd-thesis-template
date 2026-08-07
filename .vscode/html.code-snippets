@@ -1,0 +1,24 @@
+{
+  "No-break space": {
+    "prefix": "nbsp",
+    "body": ["&nbsp;"]
+  },
+  "No-break dash": {
+    "prefix": "nb-dash",
+    "body": ["&#8209;"]
+  },
+  "Color font": {
+    "prefix": "font-color",
+    "body": [
+      "<font color=\"$0\">$TM_SELECTED_TEXT</font>"
+    ],
+    "description": "Wrap the selected text in <font color=\"...\">...</font>"
+  },
+  "Wrap in nowrap span": {
+    "prefix": "nowrap",
+    "body": [
+      "<span class=\"nowrap\">$TM_SELECTED_TEXT</span>"
+    ],
+    "description": "Wrap the selected text in <span class=\"nowrap\">...</span>. This is important when combining non-breaking characters with MathJax environments."
+  }
+}

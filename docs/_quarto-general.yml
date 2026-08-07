@@ -1,0 +1,18 @@
+book:
+  navbar:
+    collapse: false
+    right:
+      - icon: download
+        menu:
+          - href: thesis.pdf
+            text: PDF
+            icon: file-pdf
+          - href: thesis.epub
+            text: ePub
+            icon: tablet
+          - href: thesis-paperback.pdf
+            text: PDF (paperback)
+            icon: file-pdf-fill
+          - href: thesis-hardcover.pdf
+            text: PDF (hardcover)
+            icon: file-pdf-fill

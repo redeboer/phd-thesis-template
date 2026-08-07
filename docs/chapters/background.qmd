@@ -1,0 +1,13 @@
+# Background {#sec-background}
+
+Review the concepts and literature needed to understand the original work. Prefer synthesis over a catalogue of papers, and make the relationship to the research questions explicit.
+
+## A sample equation
+
+Equations can be labelled and referenced using Quarto syntax:
+
+$$
+E = mc^2
+$$ {#eq-mass-energy}
+
+The relation in @eq-mass-energy illustrates a numbered cross-reference.

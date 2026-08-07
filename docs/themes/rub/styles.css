@@ -1,0 +1,25 @@
+:root {
+  --thesis-accent: #8dae10;
+  --rub-blue: #003560;
+  --rub-green: #8dae10;
+  --rub-yellow: #ffcc00;
+}
+
+.navbar {
+  background-color: var(--rub-blue);
+}
+
+.navbar-logo {
+  height: 30px;
+}
+
+.dropdown-item:hover {
+  color: #ffffff;
+  background: var(--rub-green);
+}
+
+.navbar-title:hover,
+.nav-link:hover,
+.sidebar-link:hover {
+  color: var(--rub-yellow);
+}

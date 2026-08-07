@@ -1,0 +1,115 @@
+[workspace]
+channels = ["conda-forge"]
+platforms = [
+    "linux-64",
+    "osx-64",
+    "win-64",
+]
+name = "phd-thesis"
+
+[dependencies]
+librsvg = "*"
+
+[tasks.all]
+depends-on = [
+    "style",
+    "linkcheck",
+    "doc",
+    "test-bootstrap",
+    "test-filters",
+]
+description = "Run all continuous integration (CI) tasks locally"
+
+[tasks.bootstrap]
+cmd = "uv run scripts/bootstrap.py"
+description = "Interactively configure a fresh general or RUB thesis checkout"
+
+[tasks.doc]
+depends-on = [
+    "html",
+    "pdf",
+    "epub",
+    "paperback",
+    "hardcover",
+    "rub",
+    "test-filters",
+]
+description = "Build every supported thesis format and test the Lua filters"
+
+[tasks.doclive]
+cmd = "uv run quarto preview docs --no-clean --port 7000 --to=html"
+description = "Set up a server to directly preview changes to the HTML pages"
+
+[tasks.epub]
+cmd = "uv run quarto render docs --no-clean --to=epub"
+description = "Build the thesis as an e-book"
+
+[tasks.hardcover]
+cmd = "uv run quarto render docs --no-clean --profile=hardcover --to=pdf"
+depends-on = ["_tinytex"]
+description = "Build a hardcover PDF with mirrored margins"
+
+[tasks.html]
+cmd = "uv run quarto render docs --no-clean --to=html"
+description = "Build the thesis website"
+
+[tasks.linkcheck]
+cmd = "uv run lychee ."
+description = "Check links in the repository sources"
+
+[tasks.paperback]
+cmd = "uv run quarto render docs --no-clean --profile=paperback --to=pdf"
+depends-on = ["_tinytex"]
+description = "Build a paperback PDF with mirrored margins"
+
+[tasks.pdf]
+cmd = "uv run quarto render docs --no-clean --to=pdf"
+depends-on = ["_tinytex"]
+description = "Build the screen-friendly thesis PDF"
+
+[tasks.rub]
+cmd = "uv run quarto render docs --no-clean --profile=rub"
+depends-on = ["_tinytex"]
+description = "Build all formats with the optional RUB theme"
+
+[tasks.rub-hardcover]
+cmd = "uv run quarto render docs --no-clean --profile=hardcover,rub --to=pdf"
+depends-on = ["_tinytex"]
+description = "Build a hardcover PDF with the optional RUB theme"
+
+[tasks.rub-paperback]
+cmd = "uv run quarto render docs --no-clean --profile=paperback,rub --to=pdf"
+depends-on = ["_tinytex"]
+description = "Build a paperback PDF with mirrored margins"
+
+[tasks.style]
+cmd = "pre-commit run --all-files"
+description = "Run formatting, linting, spelling, and configuration checks"
+
+[tasks.test-bootstrap]
+cmd = "uv run python scripts/check_bootstrap.py"
+description = "Test the general and RUB bootstrap procedures"
+
+[tasks.test-filters]
+cmd = "uv run python scripts/check_filters.py"
+description = "Check equation-reference rendering in HTML and LaTeX"
+
+[tasks.upgrade]
+depends-on = [
+    "_upgrade-pixi",
+    "_upgrade-precommit",
+    "_upgrade-uv",
+]
+description = "Upgrade all lock files"
+
+[tasks._tinytex]
+cmd = "uv run python scripts/install_tinytex.py"
+
+[tasks._upgrade-pixi]
+cmd = "pixi update"
+
+[tasks._upgrade-precommit]
+cmd = "pre-commit autoupdate -j8"
+
+[tasks._upgrade-uv]
+cmd = "uv lock --upgrade"

@@ -1,0 +1,139 @@
+[project]
+name = "phd-thesis"
+version = "0.1.0"
+description = "A Quarto template for a PhD thesis"
+requires-python = "~=3.13.0"
+license-files = ["LICENSE"]
+dependencies = [
+    "ipykernel",
+    "jupyter-cache",
+    "matplotlib",
+    "numpy",
+    "quarto-cli",
+]
+
+[dependency-groups]
+dev = [
+    "lychee-bin >=0.24.0",  # pyproject.toml config support
+    "ruff",
+    { include-group = "style" },
+]
+style = ["ty", { include-group = "types" }]
+types = ["rich", "typer"]
+
+[tool.compwa.policy]
+dev-python-version = "3.13"
+package-manager = "pixi+uv"
+
+[tool.compwa.policy.format]
+no-cspell-update = true
+
+[tool.compwa.policy.github]
+keep-workflow = ["upgrade.yml"]
+no-cd = true
+no-milestones = true
+upgrade-frequency = "semiannually"
+
+[tool.compwa.policy.python]
+type-checker = ["ty"]
+
+[tool.lychee]
+exclude = [
+    "^https://(?:github|username)/$",  # truncated URLs extracted from these patterns
+    "^https://github\\.com/(?:USERNAME/REPOSITORY|%7Banswers\\.repository%7D)(?:/|$)",
+    "^https://username\\.github\\.io/REPOSITORY(?:/|$)",
+]
+extensions = [
+    "bib",
+    "css",
+    "html",
+    "lua",
+    "md",
+    "py",
+    "qmd",
+    "tex",
+    "toml",
+    "yaml",
+    "yml",
+]
+include_fragments = "anchor-only"
+insecure = true
+max_concurrency = 10
+max_retries = 3
+no_progress = true
+timeout = 60
+user_agent = "Mozilla/5.0 (compatible; lychee)"
+
+[tool.ruff]
+preview = true
+show-fixes = true
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+
+[tool.ruff.lint]
+ignore = [
+    "DOC",
+    "PTH",
+    "any-type",
+    "if-else-block-instead-of-if-exp",
+    "incorrect-blank-line-before-class",
+    "line-too-long",
+    "logging-f-string",
+    "missing-copyright-notice",
+    "missing-dashed-underline-after-section",
+    "missing-section-name-colon",
+    "missing-trailing-comma",
+    "multi-line-summary-second-line",
+    "non-empty-init-module",
+    "pytest-fixture-incorrect-parentheses-style",
+    "read-whole-file",
+    "reimplemented-starmap",
+    "single-line-implicit-string-concatenation",
+    "undocumented-magic-method",
+    "undocumented-public-class",
+    "undocumented-public-function",
+    "undocumented-public-init",
+    "undocumented-public-method",
+    "unspecified-encoding",
+    "write-whole-file"
+]
+select = ["ALL"]
+task-tags = ["cspell"]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
+
+[tool.ruff.lint.per-file-ignores]
+"docs/*" = [
+    "assert",
+    "implicit-namespace-package",
+    "request-without-timeout",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.tombi.files]
+exclude = ["**/uv.lock"]
+
+[tool.tombi.format.rules]
+indent-width = 4
+line-width = 88
+
+[tool.tombi.lint.rules]
+key-empty = "off"
+
+[[tool.tombi.schemas]]
+root = "tool.compwa.policy"
+path = "https://raw.githubusercontent.com/ComPWA/policy/0.9.3/compwa-policy.schema.json"
+include = ["pyproject.toml"]
+
+[tool.ty.rules]
+division-by-zero = "warn"
+possibly-missing-import = "warn"
+possibly-unresolved-reference = "warn"
+
+[tool.ty.terminal]
+error-on-warning = true

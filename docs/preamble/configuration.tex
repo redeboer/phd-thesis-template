@@ -1,0 +1,20 @@
+\usepackage[british]{babel}
+\usepackage{bookmark}
+\usepackage{microtype}
+\usepackage[automark,headsepline]{scrlayer-scrpage}
+
+\clubpenalty=5000
+\widowpenalty=5000
+\raggedbottom
+
+\addtokomafont{disposition}{\rmfamily}
+\renewcommand*{\chapterformat}{%
+  \Huge\thechapter\enskip
+  \textcolor{gray!50}{\rule[-2.5\dp\strutbox]{4pt}{2\baselineskip}}\enskip
+}
+
+\clearpairofpagestyles
+\rehead{\headmark}
+\lohead{\headmark}
+\rohead{\pagemark}
+\lehead{\pagemark}

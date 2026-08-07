@@ -1,0 +1,93 @@
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+
+$if(title)$
+\begin{titlepage}
+  \thispagestyle{empty}
+$if(rub-theme)$
+  \def\RightBarWidth{2.6cm}
+  \def\BottomBarHeight{1.6cm}
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[RUBgray]
+      ([xshift=-\RightBarWidth]current page.north east)
+      rectangle (current page.south east);
+    \fill[RUBgray]
+      (current page.south west)
+      rectangle
+      ([xshift=-\RightBarWidth,yshift=\BottomBarHeight]current page.south east);
+    \node[anchor=north east,inner sep=0pt]
+      at ([xshift=-0.5*\RightBarWidth]current page.north east)
+      {\includegraphics[height=4cm]{themes/rub/images/rub-logo.pdf}};
+    \node[anchor=north west,inner sep=0pt]
+      at ([xshift=0.5*\RightBarWidth,yshift=-0.5cm]current page.north west)
+      {\includegraphics[width=8.5cm]{themes/rub/images/rub-text.pdf}};
+  \end{tikzpicture}
+
+  \begin{adjustwidth}{0.25cm}{\RightBarWidth}
+    \centering
+    \vspace*{\fill}
+    {\Huge\bfseries $title$\par}
+$if(subtitle)$
+    \vspace{3ex}
+    {\Large\bfseries $subtitle$\par}
+$endif$
+    \vfill
+    \begin{otherlanguage}{german}
+      {\Large\scshape Dissertation\par}
+      \vspace{2ex}
+      zur Erlangung des Grades eines\\
+      $thesis.degree$\\
+      an der $thesis.faculty$\\
+      der Ruhr-Universität Bochum
+      \vspace{4ex}
+
+      von\\[0.4em]
+$for(author)$
+      {\Large\bfseries $author$\par}
+$endfor$
+      \vspace{6ex}
+
+      Bochum, $date$
+    \end{otherlanguage}
+    \vspace*{\fill}
+  \end{adjustwidth}
+$else$
+  \centering
+  \vspace*{2cm}
+  {\Huge\bfseries $title$\par}
+$if(subtitle)$
+  \vspace{1cm}
+  {\Large $subtitle$\par}
+$endif$
+  \vfill
+$for(author)$
+  {\Large $author$\par}
+$endfor$
+  \vspace{1.5cm}
+  A dissertation submitted for the degree of\\
+  $thesis.degree$\\[1cm]
+  $thesis.department$\\
+  $thesis.institution$\\[1cm]
+  $date$
+$endif$
+\end{titlepage}
+
+\cleardoublepage
+\thispagestyle{empty}
+\vspace*{\fill}
+$if(rub-theme)$
+\begin{tabular}{@{}ll@{}}
+  Erstgutachter: & $thesis.first-examiner$ \\
+  Zweitgutachter: & $thesis.second-examiner$ \\
+  Datum der Disputation: & $thesis.defence-date$
+\end{tabular}
+$else$
+\begin{tabular}{@{}ll@{}}
+  Supervisor: & $thesis.supervisor$ \\
+  Examiner: & $thesis.examiner$ \\
+  Defence date: & $thesis.defence-date$
+\end{tabular}
+$endif$
+\cleardoublepage
+$endif$
