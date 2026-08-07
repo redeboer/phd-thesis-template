@@ -4,3 +4,4 @@ __pycache__/
 .quarto/
 .venv/
 *.py[cod]
+/.luarc.json
