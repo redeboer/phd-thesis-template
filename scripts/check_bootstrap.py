@@ -106,7 +106,7 @@ def validate_repository(root: Path, profile: str) -> None:
     """Validate files, Pixi tasks, Quarto configuration, and HTML rendering."""
     for relative_path in (
         ".github/workflows/test-bootstrap.yml",
-        "scripts/__init__.py",
+        "docs/_quarto-general.yml",
         "scripts/__pycache__",
         "scripts/bootstrap.py",
         "scripts/check_bootstrap.py",
@@ -115,25 +115,34 @@ def validate_repository(root: Path, profile: str) -> None:
         if (root / relative_path).exists():
             message = f"Bootstrap did not remove {relative_path} for {profile}"
             raise BootstrapRegressionError(message)
-    if not (root / "scripts" / "install_tinytex.py").exists():
-        message = f"Bootstrap removed scripts/install_tinytex.py for {profile}"
-        raise BootstrapRegressionError(message)
+    for relative_path in ("scripts/__init__.py", "scripts/install_tinytex.py"):
+        if not (root / relative_path).exists():
+            message = f"Bootstrap removed {relative_path} for {profile}"
+            raise BootstrapRegressionError(message)
 
     task_path = root / "pixi.toml"
     task_text = task_path.read_text(encoding="utf-8")
     tasks = tomllib.loads(task_text)["tasks"]
-    actual_doc = tasks["doc"]["depends-on"]
-    expected_doc = ["html", "pdf", "epub", "paperback", "hardcover"]
-    if profile == "general":
-        expected_doc.append("rub")
-    assert_sequence(actual_doc, expected_doc, profile, task="doc")
+    assert_sequence(
+        tasks["doc"]["depends-on"],
+        ["html", "pdf", "epub", "paperback", "hardcover"],
+        profile,
+        task="doc",
+    )
     assert_sequence(
         tasks["all"]["depends-on"],
         ["style", "linkcheck", "doc"],
         profile,
         task="all",
     )
-    for task in ("bootstrap", "test-bootstrap", "test-filters"):
+    for task in (
+        "bootstrap",
+        "rub",
+        "rub-hardcover",
+        "rub-paperback",
+        "test-bootstrap",
+        "test-filters",
+    ):
         if task in tasks:
             message = f"Template-only Pixi task {task!r} remains for {profile}"
             raise BootstrapRegressionError(message)
@@ -141,6 +150,8 @@ def validate_repository(root: Path, profile: str) -> None:
     if expected_all not in task_text:
         message = f"Pixi task dependencies were not preserved multiline for {profile}"
         raise BootstrapRegressionError(message)
+    if profile == "general":
+        validate_rub_removal(root)
 
     subprocess.run(
         ["uv", "run", "quarto", "inspect", "docs"],
@@ -148,7 +159,33 @@ def validate_repository(root: Path, profile: str) -> None:
         cwd=root,
         stdout=subprocess.DEVNULL,
     )
+    subprocess.run(["uv", "run", "ruff", "check", "."], check=True, cwd=root)
     subprocess.run(["pixi", "run", "html"], check=True, cwd=root)
+
+
+def validate_rub_removal(root: Path) -> None:
+    """Require the general profile to leave behind no RUB files or mentions."""
+    for relative_path in ("docs/_quarto-rub.yml", "docs/themes"):
+        if (root / relative_path).exists():
+            message = f"Bootstrap did not remove {relative_path} for general"
+            raise BootstrapRegressionError(message)
+    for relative_path in (
+        ".cspell.json",
+        ".cspell/this-project.txt",
+        "README.md",
+        "docs/_quarto.yml",
+        "docs/preamble/before-body.tex",
+        "pixi.toml",
+    ):
+        text = (root / relative_path).read_text(encoding="utf-8").lower()
+        for term in ("rub", "bochum"):
+            if term in text:
+                message = f"RUB mention {term!r} remains in {relative_path} for general"
+                raise BootstrapRegressionError(message)
+    hook_text = (root / ".pre-commit-config.yaml").read_text(encoding="utf-8")
+    if ".svg" in hook_text:
+        message = "The RUB-only SVG pre-commit exclude remains for general"
+        raise BootstrapRegressionError(message)
 
 
 def assert_sequence(

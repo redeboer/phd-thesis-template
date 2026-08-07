@@ -8,6 +8,8 @@
 # ///
 """Configure a fresh checkout of the thesis template."""
 
+# cspell:ignore keepends licence
+
 from __future__ import annotations
 
 import json
@@ -27,6 +29,8 @@ from rich.prompt import Prompt
 
 CONSOLE = Console()
 ERROR_CONSOLE = Console(stderr=True)
+RUB_CONDITIONALS = 2
+"""Number of ``rub-theme`` conditionals in ``docs/preamble/before-body.tex``."""
 
 
 def bootstrap(  # ruff: ignore[too-many-arguments, too-many-positional-arguments]
@@ -209,12 +213,19 @@ def apply_answers(root: Path, answers: Answers) -> None:
         rub_path = docs / "_quarto-rub.yml"
         configure_rub(rub_path, answers)
         main_text = apply_rub_configuration(main_text, main_path, answers)
-        task_text = configure_tasks_for_rub(task_path)
         rub_path.unlink()
-        (docs / "_quarto-general.yml").unlink()
+    else:
+        main_text = apply_general_configuration(main_text, main_path)
+        remove_rub_branches(docs / "preamble" / "before-body.tex")
+        remove_rub_documentation(root / "README.md")
+        remove_rub_spelling_configuration(root)
+        remove_rub_hook_exclude(root / ".pre-commit-config.yaml")
+        remove_rub_files(docs)
+    task_text = remove_rub_tasks(task_text, task_path)
     task_text = remove_template_tasks(task_text, task_path)
     task_path.write_text(task_text, encoding="utf-8")
     main_path.write_text(main_text, encoding="utf-8")
+    (docs / "_quarto-general.yml").unlink()
     remove_template_files(root)
 
 
@@ -356,6 +367,51 @@ def configure_main(path: Path, answers: Answers) -> str:
         "date: today": f"date: {yaml_string(answers.date)}",
         "https://github.com/USERNAME/REPOSITORY": f"https://github.com/{answers.repository}",
         "https://USERNAME.github.io/REPOSITORY": f"https://{answers.repository.split('/', maxsplit=1)[0]}.github.io/{answers.repository.split('/', maxsplit=1)[1]}",
+    }
+    for old, new in replacements.items():
+        text = replace_once(text, old, new, path)
+    return text
+
+
+def apply_general_configuration(text: str, path: Path) -> str:
+    """Inline the general profile and drop the profile group from the main config."""
+    replacements = {
+        dedent("""\
+        profile:
+          group:
+            - [general, rub]
+
+        """): "",
+        indent(
+            dedent("""\
+          output-file: thesis
+          page-navigation: true
+        """),
+            "  ",
+        ): indent(
+            dedent("""\
+          output-file: thesis
+          navbar:
+            collapse: false
+            right:
+              - icon: download
+                menu:
+                  - href: thesis.pdf
+                    text: PDF
+                    icon: file-pdf
+                  - href: thesis.epub
+                    text: ePub
+                    icon: tablet
+                  - href: thesis-paperback.pdf
+                    text: PDF (paperback)
+                    icon: file-pdf-fill
+                  - href: thesis-hardcover.pdf
+                    text: PDF (hardcover)
+                    icon: file-pdf-fill
+          page-navigation: true
+        """),
+            "  ",
+        ),
     }
     for old, new in replacements.items():
         text = replace_once(text, old, new, path)
@@ -519,20 +575,129 @@ def configure_rub(path: Path, answers: Answers) -> str:
     return text
 
 
-def configure_tasks_for_rub(path: Path) -> str:
-    """Return Pixi configuration whose standard tasks build the RUB thesis."""
-    text = path.read_text(encoding="utf-8")
+def remove_rub_tasks(text: str, path: Path) -> str:
+    """Remove the Pixi tasks that build the optional RUB variant.
+
+    Both profiles drop these tasks: the RUB profile turns the standard tasks into
+    RUB builds, and the general profile removes the RUB variant altogether.
+    """
     text = remove_sequence_item(text, path, table="tasks.doc", item="rub")
     for task in ("rub", "rub-hardcover", "rub-paperback"):
-        pattern = re.compile(rf"\n\[tasks\.{task}\]\n.*?(?=\n\[)", re.DOTALL)
-        matches = pattern.findall(text)
-        if len(matches) != 1:
-            message = (
-                f"Expected one Pixi task named {task!r} in {path}, found {len(matches)}"
-            )
-            raise RuntimeError(message)
-        text = pattern.sub("", text, count=1)
+        text = remove_pixi_task(text, path, task)
     return text
+
+
+def remove_rub_branches(path: Path) -> None:
+    """Keep only the non-RUB branch of each ``rub-theme`` conditional in a template."""
+    lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
+    kept, depth, found = keep_general_branches(lines)
+    if depth != 0:
+        message = f"Unbalanced rub-theme conditional in {path}"
+        raise RuntimeError(message)
+    if found != RUB_CONDITIONALS:
+        message = (
+            f"Expected {RUB_CONDITIONALS} rub-theme conditionals in {path}, "
+            f"found {found}"
+        )
+        raise RuntimeError(message)
+    path.write_text("".join(kept), encoding="utf-8")
+
+
+def keep_general_branches(lines: list[str]) -> tuple[list[str], int, int]:
+    """Drop each RUB branch, returning the kept lines, nesting depth, and branch count.
+
+    Pandoc templates nest conditionals, so this tracks ``$if(...)$`` depth instead of
+    matching the first ``$else$`` or ``$endif$`` that follows a ``rub-theme`` branch.
+    """
+    kept: list[str] = []
+    depth = 0
+    keeping = True
+    found = 0
+    for line in lines:
+        marker = line.strip()
+        if depth == 0:
+            if marker == "$if(rub-theme)$":
+                depth = 1
+                keeping = False
+                found += 1
+            else:
+                kept.append(line)
+            continue
+        if marker.startswith("$if("):
+            depth += 1
+        elif marker == "$else$" and depth == 1:
+            keeping = True
+            continue
+        elif marker == "$endif$":
+            depth -= 1
+            if depth == 0:
+                keeping = True
+                continue
+        if keeping:
+            kept.append(line)
+    return kept, depth, found
+
+
+def remove_rub_documentation(path: Path) -> None:
+    """Remove the README section and mentions that describe the RUB profile."""
+    text = path.read_text(encoding="utf-8")
+    replacements = {
+        "The one-shot bootstrap CLI configures either the general thesis or the RUB variant, then removes": "The one-shot bootstrap CLI configures the thesis, then removes",
+        dedent("""\
+        ## Optional RUB theme
+
+        The template includes an optional [Ruhr University Bochum](https://www.ruhr-uni-bochum.de/en) [project profile](https://quarto.org/docs/projects/profiles.html). Selecting `rub` during bootstrap makes it the main configuration, so the standard Pixi tasks build the RUB thesis. The general profile uses a supervisor and examiner; the RUB title page instead uses first and second examiners.
+
+        > [!IMPORTANT]
+        > The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://services.ruhr-uni-bochum.de/de/corporate-design-der-ruhr-universitaet-bochum). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
+
+        """): "",
+    }
+    for old, new in replacements.items():
+        text = replace_once(text, old, new, path)
+    path.write_text(text, encoding="utf-8")
+
+
+def remove_rub_spelling_configuration(root: Path) -> None:
+    """Remove the spell-checker entries that only the RUB profile needs."""
+    settings_path = root / ".cspell.json"
+    settings_text = settings_path.read_text(encoding="utf-8")
+    settings_text = replace_once(
+        settings_text, '    "docs/themes/**/*.svg",\n', "", settings_path
+    )
+    settings_path.write_text(settings_text, encoding="utf-8")
+    words_path = root / ".cspell" / "this-project.txt"
+    words_text = words_path.read_text(encoding="utf-8")
+    for word in ("Astronomie", "Doktors", "Fakultät", "Naturwissenschaften", "Physik"):
+        words_text = replace_once(words_text, f"{word}\n", "", words_path)
+    words_path.write_text(words_text, encoding="utf-8")
+
+
+def remove_rub_hook_exclude(path: Path) -> None:
+    """Remove the pre-commit exclude that only the RUB branding SVGs need."""
+    text = path.read_text(encoding="utf-8")
+    text = replace_once(
+        text,
+        indent(
+            dedent("""\
+        - id: end-of-file-fixer
+          exclude: >-
+            (?x)^(
+              .*/.*\\.svg$
+            )$
+        """),
+            "      ",
+        ),
+        "      - id: end-of-file-fixer\n",
+        path,
+    )
+    path.write_text(text, encoding="utf-8")
+
+
+def remove_rub_files(docs: Path) -> None:
+    """Remove the RUB profile configuration and its branding assets."""
+    (docs / "_quarto-rub.yml").unlink()
+    shutil.rmtree(docs / "themes")
 
 
 def remove_pixi_task(text: str, path: Path, task: str) -> str:
@@ -609,11 +774,11 @@ def remove_template_files(root: Path) -> None:
     """Remove scripts and CI that exist only to validate the template.
 
     The ``scripts`` directory itself is kept, because ``scripts/install_tinytex.py``
-    remains in use by the PDF tasks of a bootstrapped thesis.
+    remains in use by the PDF tasks of a bootstrapped thesis. Its ``__init__.py`` is
+    kept along with it, so that Ruff does not report an implicit namespace package.
     """
     template_files = (
         root / ".github" / "workflows" / "test-bootstrap.yml",
-        root / "scripts" / "__init__.py",
         root / "scripts" / "bootstrap.py",
         root / "scripts" / "check_bootstrap.py",
         root / "scripts" / "check_filters.py",
