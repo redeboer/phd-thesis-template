@@ -229,6 +229,7 @@ def apply_answers(root: Path, answers: Answers) -> None:
         configure_rub(rub_path, answers)
         main_text = apply_rub_configuration(main_text, main_path, answers)
         rub_path.unlink()
+        (docs / "favicon.ico").unlink()
     else:
         main_text = apply_general_configuration(main_text, main_path)
         remove_rub_spelling_configuration(root)
@@ -475,6 +476,7 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
         indent(
             dedent("""\
           description: PhD thesis
+          favicon: favicon.ico
           chapters:
         """),
             "  ",

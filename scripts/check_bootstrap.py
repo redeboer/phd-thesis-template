@@ -203,6 +203,9 @@ def validate_rub_removal(root: Path) -> None:
         if (root / relative_path).exists():
             message = f"Bootstrap did not remove {relative_path} for general"
             raise BootstrapRegressionError(message)
+    if not (root / "docs/favicon.ico").exists():
+        message = "Bootstrap removed docs/favicon.ico for general"
+        raise BootstrapRegressionError(message)
     for relative_path in (
         ".cspell.json",
         ".cspell/this-project.txt",
@@ -224,6 +227,9 @@ def validate_rub_removal(root: Path) -> None:
 
 def validate_general_removal(root: Path) -> None:
     """Require the RUB profile to leave behind no general-profile configuration."""
+    if (root / "docs/favicon.ico").exists():
+        message = "Bootstrap did not remove docs/favicon.ico for rub"
+        raise BootstrapRegressionError(message)
     for relative_path, terms in (
         ("README.md", ("general", "supervisor")),
         ("docs/_quarto.yml", ("general", "supervisor", "rub-theme")),

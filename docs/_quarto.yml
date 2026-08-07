@@ -32,6 +32,7 @@ book:
   date: today
   date-format: MMMM YYYY
   description: PhD thesis
+  favicon: favicon.ico
   chapters:
     - index.qmd
     - chapters/introduction.qmd
