@@ -17,7 +17,7 @@ The chapters in the sidebar are a tour of the authoring features, not a narrativ
 - @sec-background contains a labelled equation, @eq-mass-energy, demonstrating numbered equation cross-references in both HTML and LaTeX.
 - @sec-methods embeds an [executable Python cell](https://quarto.org/docs/computations/python.html) whose figure and numbers are generated during the build and cached between runs. It also demonstrates folded code, hidden input, and format-dependent output.
 - @sec-results shows a cross-referenced table, @tbl-example.
-- The [References](references.qmd) page collects citations such as [@example2024], rendered from `docs/references.bib` through a [CSL style](https://quarto.org/docs/authoring/citations.html).
+- The [References](references.qmd) page collects citations such as [@example2024; @collaboration2025], rendered from `docs/references.bib` through a [CSL style](https://quarto.org/docs/authoring/citations.html). The second entry has 26 authors, so it shows how the IEEE style truncates long author lists with "_et al._".
 
 The same sources produce the downloadable PDF and ePub editions, including paperback and hardcover PDFs with mirrored margins, and an optional [Ruhr University Bochum](https://www.ruhr-uni-bochum.de/en) theme.
 
