@@ -152,6 +152,8 @@ def validate_repository(root: Path, profile: str) -> None:
         raise BootstrapRegressionError(message)
     if profile == "general":
         validate_rub_removal(root)
+    else:
+        validate_general_removal(root)
 
     subprocess.run(
         ["uv", "run", "quarto", "inspect", "docs"],
@@ -186,6 +188,20 @@ def validate_rub_removal(root: Path) -> None:
     if ".svg" in hook_text:
         message = "The RUB-only SVG pre-commit exclude remains for general"
         raise BootstrapRegressionError(message)
+
+
+def validate_general_removal(root: Path) -> None:
+    """Require the RUB profile to leave behind no general-profile configuration."""
+    for relative_path, terms in (
+        ("README.md", ("general", "supervisor")),
+        ("docs/_quarto.yml", ("general", "supervisor", "rub-theme")),
+        ("docs/preamble/before-body.tex", ("supervisor", "rub-theme", "$else$")),
+    ):
+        text = (root / relative_path).read_text(encoding="utf-8").lower()
+        for term in terms:
+            if term in text:
+                message = f"General-profile leftover {term!r} remains in {relative_path} for rub"
+                raise BootstrapRegressionError(message)
 
 
 def assert_sequence(

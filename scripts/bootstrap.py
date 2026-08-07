@@ -216,11 +216,14 @@ def apply_answers(root: Path, answers: Answers) -> None:
         rub_path.unlink()
     else:
         main_text = apply_general_configuration(main_text, main_path)
-        remove_rub_branches(docs / "preamble" / "before-body.tex")
-        remove_rub_documentation(root / "README.md")
         remove_rub_spelling_configuration(root)
         remove_rub_hook_exclude(root / ".pre-commit-config.yaml")
         remove_rub_files(docs)
+    resolve_rub_branches(
+        docs / "preamble" / "before-body.tex",
+        keep_rub=answers.profile is Profile.RUB,
+    )
+    configure_documentation(root / "README.md", answers.profile)
     task_text = remove_rub_tasks(task_text, task_path)
     task_text = remove_template_tasks(task_text, task_path)
     task_path.write_text(task_text, encoding="utf-8")
@@ -499,17 +502,6 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
         """),
             "  ",
         ),
-        dedent("""\
-        link-citations: true
-
-        format:
-        """): dedent("""\
-        link-citations: true
-
-        rub-theme: true
-
-        format:
-        """),
         indent(
             dedent("""\
           html:
@@ -587,10 +579,14 @@ def remove_rub_tasks(text: str, path: Path) -> str:
     return text
 
 
-def remove_rub_branches(path: Path) -> None:
-    """Keep only the non-RUB branch of each ``rub-theme`` conditional in a template."""
+def resolve_rub_branches(path: Path, *, keep_rub: bool) -> None:
+    """Resolve every ``rub-theme`` conditional in a Pandoc template to one branch.
+
+    Only one profile survives bootstrapping, so the conditional has nothing left to
+    choose between: the branch of the profile that was not selected is dead code.
+    """
     lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
-    kept, depth, found = keep_general_branches(lines)
+    kept, depth, found = select_branches(lines, keep_rub=keep_rub)
     if depth != 0:
         message = f"Unbalanced rub-theme conditional in {path}"
         raise RuntimeError(message)
@@ -603,8 +599,8 @@ def remove_rub_branches(path: Path) -> None:
     path.write_text("".join(kept), encoding="utf-8")
 
 
-def keep_general_branches(lines: list[str]) -> tuple[list[str], int, int]:
-    """Drop each RUB branch, returning the kept lines, nesting depth, and branch count.
+def select_branches(lines: list[str], *, keep_rub: bool) -> tuple[list[str], int, int]:
+    """Keep one branch per conditional, returning the lines, depth, and branch count.
 
     Pandoc templates nest conditionals, so this tracks ``$if(...)$`` depth instead of
     matching the first ``$else$`` or ``$endif$`` that follows a ``rub-theme`` branch.
@@ -618,7 +614,7 @@ def keep_general_branches(lines: list[str]) -> tuple[list[str], int, int]:
         if depth == 0:
             if marker == "$if(rub-theme)$":
                 depth = 1
-                keeping = False
+                keeping = keep_rub
                 found += 1
             else:
                 kept.append(line)
@@ -626,7 +622,7 @@ def keep_general_branches(lines: list[str]) -> tuple[list[str], int, int]:
         if marker.startswith("$if("):
             depth += 1
         elif marker == "$else$" and depth == 1:
-            keeping = True
+            keeping = not keep_rub
             continue
         elif marker == "$endif$":
             depth -= 1
@@ -638,23 +634,37 @@ def keep_general_branches(lines: list[str]) -> tuple[list[str], int, int]:
     return kept, depth, found
 
 
-def remove_rub_documentation(path: Path) -> None:
-    """Remove the README section and mentions that describe the RUB profile."""
+def configure_documentation(path: Path, profile: Profile) -> None:
+    """Remove the README passages that describe the profile that was not selected."""
     text = path.read_text(encoding="utf-8")
-    replacements = {
-        "The one-shot bootstrap CLI configures either the general thesis or the RUB variant, then removes": "The one-shot bootstrap CLI configures the thesis, then removes",
+    text = replace_once(
+        text,
+        "The one-shot bootstrap CLI configures either the general thesis or the RUB variant, then removes",
+        "The one-shot bootstrap CLI configures the thesis, then removes",
+        path,
+    )
+    text = replace_once(
+        text,
         dedent("""\
         ## Optional RUB theme
 
         The template includes an optional [Ruhr University Bochum](https://www.ruhr-uni-bochum.de/en) [project profile](https://quarto.org/docs/projects/profiles.html). Selecting `rub` during bootstrap makes it the main configuration, so the standard Pixi tasks build the RUB thesis. The general profile uses a supervisor and examiner; the RUB title page instead uses first and second examiners.
 
-        > [!IMPORTANT]
-        > The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://services.ruhr-uni-bochum.de/de/corporate-design-der-ruhr-universitaet-bochum). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
+        """),
+        "## RUB branding\n\n" if profile is Profile.RUB else "",
+        path,
+    )
+    if profile is not Profile.RUB:
+        text = replace_once(
+            text,
+            dedent("""\
+            > [!IMPORTANT]
+            > The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://services.ruhr-uni-bochum.de/de/corporate-design-der-ruhr-universitaet-bochum). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
 
-        """): "",
-    }
-    for old, new in replacements.items():
-        text = replace_once(text, old, new, path)
+            """),
+            "",
+            path,
+        )
     path.write_text(text, encoding="utf-8")
 
 
