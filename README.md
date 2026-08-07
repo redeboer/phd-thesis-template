@@ -1,5 +1,6 @@
 # PhD thesis template
 
+[![CI](https://github.com/redeboer/phd-thesis-template/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/redeboer/phd-thesis-template/actions/workflows/ci.yml)
 [![Spelling checked](https://img.shields.io/badge/cspell-checked-brightgreen.svg)](https://github.com/streetsidesoftware/cspell/tree/main/packages/cspell)
 [![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
