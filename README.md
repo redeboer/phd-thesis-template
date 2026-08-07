@@ -1,5 +1,6 @@
 # PhD thesis template
 
+[![CI](https://github.com/redeboer/phd-thesis-template/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/redeboer/phd-thesis-template/actions/workflows/ci.yml)
 [![Spelling checked](https://img.shields.io/badge/cspell-checked-brightgreen.svg)](https://github.com/streetsidesoftware/cspell/tree/main/packages/cspell)
 [![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
@@ -8,6 +9,8 @@
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 A reusable [Quarto](https://quarto.org) book template for writing and publishing a PhD thesis. It is based on the structure of [`redeboer/phd-thesis`](https://github.com/redeboer/phd-thesis), with the thesis-specific prose, figures, branding, and scientific dependencies removed.
+
+The template builds itself with placeholder content, so its own output is a live example of what you get: <https://redeboer.github.io/phd-thesis-template>.
 
 > [!NOTE]
 > This template is intended to remain compatible with Quarto v1. Quarto v2 is being developed separately in [`quarto-dev/q2`](https://github.com/quarto-dev/q2), and is not currently a compatibility target.

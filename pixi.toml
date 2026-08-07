@@ -68,9 +68,12 @@ depends-on = ["_tinytex"]
 description = "Build the screen-friendly thesis PDF"
 
 [tasks.rub]
-cmd = "uv run quarto render docs --no-clean --profile=rub"
+cmd = """
+uv run quarto render docs --no-clean --profile=rub --to=pdf \
+    && uv run quarto render docs --no-clean --profile=rub --to=epub
+"""
 depends-on = ["_tinytex"]
-description = "Build all formats with the optional RUB theme"
+description = "Build the PDF and e-book with the optional RUB theme"
 
 [tasks.rub-hardcover]
 cmd = "uv run quarto render docs --no-clean --profile=hardcover,rub --to=pdf"
