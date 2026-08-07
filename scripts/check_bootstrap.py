@@ -1,5 +1,6 @@
 """Regression checks for the general and RUB bootstrap procedures."""
 
+# cspell:ignore Boer Remco
 # ruff: file-ignore[suspicious-subprocess-import, subprocess-without-shell-equals-true, start-process-with-partial-path]
 
 from __future__ import annotations
@@ -11,6 +12,10 @@ import tomllib
 from pathlib import Path
 
 PROFILES = ("general", "rub")
+GIVEN_NAME = "Ada"
+FAMILY_NAME = "Lovelace"
+AUTHOR = f"{GIVEN_NAME} {FAMILY_NAME}"
+TEMPLATE_AUTHOR = "Remco de Boer"
 
 
 def main() -> None:
@@ -59,9 +64,9 @@ def bootstrap(root: Path, profile: str) -> None:
         "--subtitle",
         "",
         "--given-name",
-        "Ada",
+        GIVEN_NAME,
         "--family-name",
-        "Lovelace",
+        FAMILY_NAME,
         "--institution",
         "Example University",
         "--department",
@@ -150,6 +155,7 @@ def validate_repository(root: Path, profile: str) -> None:
     if expected_all not in task_text:
         message = f"Pixi task dependencies were not preserved multiline for {profile}"
         raise BootstrapRegressionError(message)
+    validate_license(root, profile)
     if profile == "general":
         validate_rub_removal(root)
     else:
@@ -163,6 +169,19 @@ def validate_repository(root: Path, profile: str) -> None:
     )
     subprocess.run(["uv", "run", "ruff", "check", "."], check=True, cwd=root)
     subprocess.run(["pixi", "run", "html"], check=True, cwd=root)
+
+
+def validate_license(root: Path, profile: str) -> None:
+    """Require the license to name the thesis author instead of the template author."""
+    text = (root / "LICENSE").read_text(encoding="utf-8")
+    if TEMPLATE_AUTHOR in text:
+        message = (
+            f"Template author {TEMPLATE_AUTHOR!r} remains in LICENSE for {profile}"
+        )
+        raise BootstrapRegressionError(message)
+    if AUTHOR not in text:
+        message = f"Author {AUTHOR!r} is missing from LICENSE for {profile}"
+        raise BootstrapRegressionError(message)
 
 
 def validate_rub_removal(root: Path) -> None:

@@ -8,7 +8,7 @@
 # ///
 """Configure a fresh checkout of the thesis template."""
 
-# cspell:ignore keepends licence
+# cspell:ignore Boer keepends licence Remco
 
 from __future__ import annotations
 
@@ -31,6 +31,8 @@ CONSOLE = Console()
 ERROR_CONSOLE = Console(stderr=True)
 RUB_CONDITIONALS = 2
 """Number of ``rub-theme`` conditionals in ``docs/preamble/before-body.tex``."""
+TEMPLATE_AUTHOR = "Remco de Boer"
+"""Author in the copyright line of ``LICENSE`` of the pristine template."""
 
 
 def bootstrap(  # ruff: ignore[too-many-arguments, too-many-positional-arguments]
@@ -224,6 +226,7 @@ def apply_answers(root: Path, answers: Answers) -> None:
         keep_rub=answers.profile is Profile.RUB,
     )
     configure_documentation(root / "README.md", answers.profile)
+    configure_license(root / "LICENSE", answers)
     task_text = remove_rub_tasks(task_text, task_path)
     task_text = remove_template_tasks(task_text, task_path)
     task_path.write_text(task_text, encoding="utf-8")
@@ -665,6 +668,18 @@ def configure_documentation(path: Path, profile: Profile) -> None:
             "",
             path,
         )
+    path.write_text(text, encoding="utf-8")
+
+
+def configure_license(path: Path, answers: Answers) -> None:
+    """Put the thesis author in the copyright line of the license."""
+    text = path.read_text(encoding="utf-8")
+    text = replace_once(
+        text,
+        TEMPLATE_AUTHOR,
+        f"{answers.given_name} {answers.family_name}",
+        path,
+    )
     path.write_text(text, encoding="utf-8")
 
 
