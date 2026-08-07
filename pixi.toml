@@ -54,13 +54,7 @@ cmd = "uv run quarto render docs --no-clean --to=html"
 description = "Build the thesis website"
 
 [tasks.linkcheck]
-cmd = """
-uv run lychee \
-    --extensions bib,css,html,lua,md,py,qmd,tex,toml,yaml,yml \
-    --include-fragments \
-    --no-progress \
-    .
-"""
+cmd = "uv run lychee ."
 description = "Check links in the repository sources"
 
 [tasks.paperback]

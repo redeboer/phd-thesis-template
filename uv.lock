@@ -1175,7 +1175,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "lychee-bin" },
+    { name = "lychee-bin", specifier = ">=0.24.0" },
     { name = "rich" },
     { name = "ruff" },
     { name = "ty" },

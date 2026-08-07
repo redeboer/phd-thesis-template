@@ -14,7 +14,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "lychee-bin",
+    "lychee-bin >=0.24.0",  # pyproject.toml config support
     "ruff",
     { include-group = "style" },
 ]
@@ -36,6 +36,33 @@ upgrade-frequency = "semiannually"
 
 [tool.compwa.policy.python]
 type-checker = ["ty"]
+
+[tool.lychee]
+exclude = [
+    "^https://(?:github|username)/$",  # truncated URLs extracted from these patterns
+    "^https://github\\.com/(?:USERNAME/REPOSITORY|%7Banswers\\.repository%7D)(?:/|$)",
+    "^https://username\\.github\\.io/REPOSITORY(?:/|$)",
+]
+extensions = [
+    "bib",
+    "css",
+    "html",
+    "lua",
+    "md",
+    "py",
+    "qmd",
+    "tex",
+    "toml",
+    "yaml",
+    "yml",
+]
+include_fragments = "anchor-only"
+insecure = true
+max_concurrency = 10
+max_retries = 3
+no_progress = true
+timeout = 60
+user_agent = "Mozilla/5.0 (compatible; lychee)"
 
 [tool.ruff]
 preview = true
