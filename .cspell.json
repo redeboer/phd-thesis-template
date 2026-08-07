@@ -32,6 +32,7 @@
     ".editorconfig",
     ".envrc",
     ".github/dependabot.yml",
+    ".github/workflows/test-bootstrap.yml",
     ".gitignore",
     ".pre-commit-config.yaml",
     ".prettierignore",
