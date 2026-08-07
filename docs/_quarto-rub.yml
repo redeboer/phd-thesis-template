@@ -1,5 +1,6 @@
 book:
   description: PhD thesis, Ruhr University Bochum
+  favicon: themes/rub/images/favicon.ico
   output-file: thesis-rub
   navbar:
     background: "#003560"

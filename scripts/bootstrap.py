@@ -403,6 +403,7 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
         ): indent(
             dedent("""\
           description: PhD thesis, Ruhr University Bochum
+          favicon: themes/rub/images/favicon.ico
           chapters:
         """),
             "  ",
