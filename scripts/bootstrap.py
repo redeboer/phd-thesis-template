@@ -211,6 +211,7 @@ def apply_answers(root: Path, answers: Answers) -> None:
         main_text = apply_rub_configuration(main_text, main_path, answers)
         task_text = configure_tasks_for_rub(task_path)
         rub_path.unlink()
+        (docs / "_quarto-general.yml").unlink()
     task_text = remove_template_tasks(task_text, task_path)
     task_path.write_text(task_text, encoding="utf-8")
     main_path.write_text(main_text, encoding="utf-8")
@@ -365,6 +366,12 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
     """Make the RUB configuration the repository's main Quarto configuration."""
     rub = require_rub_answers(answers)
     replacements = {
+        dedent("""\
+        profile:
+          group:
+            - [general, rub]
+
+        """): "",
         dedent(f"""\
         thesis:
           degree: {yaml_string(answers.degree)}
@@ -411,8 +418,24 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
           output-file: thesis-rub
           navbar:
             background: "#003560"
+            collapse: false
             foreground: "#e7e7e7"
             logo: themes/rub/images/rub-white.svg
+            right:
+              - icon: download
+                menu:
+                  - href: thesis-rub.pdf
+                    text: PDF
+                    icon: file-pdf
+                  - href: thesis-rub.epub
+                    text: ePub
+                    icon: tablet
+                  - href: thesis-paperback.pdf
+                    text: PDF (paperback)
+                    icon: file-pdf-fill
+                  - href: thesis-hardcover.pdf
+                    text: PDF (hardcover)
+                    icon: file-pdf-fill
           sidebar:
             logo: themes/rub/images/rub-text.svg
           page-navigation: true

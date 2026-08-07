@@ -3,8 +3,24 @@ book:
   output-file: thesis-rub
   navbar:
     background: "#003560"
+    collapse: false
     foreground: "#e7e7e7"
     logo: themes/rub/images/rub-white.svg
+    right:
+      - icon: download
+        menu:
+          - href: thesis-rub.pdf
+            text: PDF
+            icon: file-pdf
+          - href: thesis-rub.epub
+            text: ePub
+            icon: tablet
+          - href: thesis-paperback.pdf
+            text: PDF (paperback)
+            icon: file-pdf-fill
+          - href: thesis-hardcover.pdf
+            text: PDF (hardcover)
+            icon: file-pdf-fill
   sidebar:
     logo: themes/rub/images/rub-text.svg
 

@@ -2,6 +2,10 @@ project:
   type: book
   output-dir: _build/html
 
+profile:
+  group:
+    - [general, rub]
+
 thesis:
   degree: Doctor of Philosophy
   institution: &institution Your University
