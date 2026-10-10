@@ -9,6 +9,7 @@ name = "phd-thesis"
 
 [dependencies]
 librsvg = "*"
+lychee = ">=0.24.0"
 
 [tasks.all]
 depends-on = [
@@ -86,7 +87,7 @@ depends-on = ["_tinytex"]
 description = "Build a paperback PDF with mirrored margins"
 
 [tasks.style]
-cmd = "pre-commit run --all-files"
+cmd = "prek run --all-files"
 description = "Run formatting, linting, spelling, and configuration checks"
 
 [tasks.test-bootstrap]
@@ -112,7 +113,7 @@ cmd = "uv run python scripts/install_tinytex.py"
 cmd = "pixi update"
 
 [tasks._upgrade-precommit]
-cmd = "pre-commit autoupdate -j8"
+cmd = "prek autoupdate"
 
 [tasks._upgrade-uv]
 cmd = "uv lock --upgrade"
