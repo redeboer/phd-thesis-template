@@ -96,6 +96,7 @@ description = "Test the general and RUB bootstrap procedures"
 
 [tasks.test-filters]
 cmd = "uv run python scripts/check_filters.py"
+depends-on = ["html", "pdf"]
 description = "Check equation-reference rendering in HTML and LaTeX"
 
 [tasks.upgrade]
