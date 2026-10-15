@@ -6,7 +6,7 @@
 \definecolor{RUBlightblue}{RGB}{220, 235, 251}
 \foreach \RUBfont in {Regular,Italic,SemiBold,ExtraBold}{
   \IfFileExists{themes/rub/fonts/RUBInter-\RUBfont.ttf}{}{%
-    \PackageError{RUB theme}{Missing RUB Inter fonts. Run pixi run rub-fonts}{Download the official fonts before rendering the RUB PDF.}%
+    \PackageError{RUB theme}{Missing RUB Inter fonts. Run pixi run rub-assets}{Download the official fonts before rendering the RUB PDF.}%
   }
 }
 \newfontfamily\RUBtitlefont{RUBInter}[

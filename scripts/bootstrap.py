@@ -231,17 +231,29 @@ def apply_answers(root: Path, answers: Answers) -> None:
         rub_path.unlink()
         (docs / "favicon.ico").unlink()
         task_text = task_text.replace(
-            'depends-on = ["_tinytex"]', 'depends-on = ["_tinytex", "rub-fonts"]'
+            'depends-on = ["_tinytex"]',
+            'depends-on = ["_tinytex", "rub-assets"]',
+        )
+        task_text = replace_once(
+            task_text,
+            '[tasks.html]\ncmd = "uv run quarto render docs --no-clean --to=html"',
+            '[tasks.html]\ncmd = "uv run quarto render docs --no-clean --to=html"\ndepends-on = ["rub-assets"]',
+            task_path,
+        )
+        task_text = replace_once(
+            task_text,
+            '[tasks.epub]\ncmd = "uv run quarto render docs --no-clean --to=epub"',
+            '[tasks.epub]\ncmd = "uv run quarto render docs --no-clean --to=epub"\ndepends-on = ["rub-assets"]',
+            task_path,
         )
     else:
         main_text = apply_general_configuration(main_text, main_path)
         remove_rub_spelling_configuration(root)
-        remove_rub_hook_exclude(root / ".pre-commit-config.yaml")
         remove_rub_files(docs)
-        task_text = remove_pixi_task(task_text, task_path, "rub-fonts")
+        task_text = remove_pixi_task(task_text, task_path, "rub-assets")
         task_text = replace_once(
             task_text,
-            '[tasks.linkcheck]\ncmd = "uv run lychee ."\ndepends-on = ["rub-fonts"]',
+            '[tasks.linkcheck]\ncmd = "uv run lychee ."\ndepends-on = ["rub-assets"]',
             '[tasks.linkcheck]\ncmd = "uv run lychee ."',
             task_path,
         )
@@ -606,7 +618,7 @@ def remove_rub_tasks(text: str, path: Path) -> str:
     RUB builds, and the general profile removes the RUB variant altogether.
     """
     text = remove_sequence_item(text, path, table="tasks.doc", item="rub")
-    for task in ("rub", "rub-hardcover", "rub-paperback"):
+    for task in ("rub", "rub-hardcover", "rub-html", "rub-paperback"):
         text = remove_pixi_task(text, path, task)
     return text
 
@@ -703,7 +715,7 @@ def configure_documentation(path: Path, profile: Profile) -> None:
     if profile is not Profile.RUB:
         text = replace_once(
             text,
-            "Run `pixi run rub-fonts` before building the RUB website; PDF tasks download the fonts automatically. See [branding asset notes](docs/themes/rub/README.md).\n\n",
+            "Run `pixi run rub-html` to preview the RUB website, or `pixi run rub-assets` to download only its assets. RUB builds fetch the unchanged logos from the official [logo archive](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/10/RUB_Logo.zip) and [RUB Inter](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/09/RUB_Inter.zip) on demand. The fonts retain their [SIL Open Font License](https://github.com/rsms/inter/blob/v4.1/LICENSE.txt).\n\n",
             "",
             path,
         )
@@ -734,38 +746,11 @@ def configure_license(path: Path, answers: Answers) -> None:
 
 def remove_rub_spelling_configuration(root: Path) -> None:
     """Remove the spell-checker entries that only the RUB profile needs."""
-    settings_path = root / ".cspell.json"
-    settings_text = settings_path.read_text(encoding="utf-8")
-    settings_text = replace_once(
-        settings_text, '    "docs/themes/**/*.svg",\n', "", settings_path
-    )
-    settings_path.write_text(settings_text, encoding="utf-8")
     words_path = root / ".cspell" / "this-project.txt"
     words_text = words_path.read_text(encoding="utf-8")
     for word in ("Astronomie", "Doktors", "Fakultät", "Naturwissenschaften", "Physik"):
         words_text = replace_once(words_text, f"{word}\n", "", words_path)
     words_path.write_text(words_text, encoding="utf-8")
-
-
-def remove_rub_hook_exclude(path: Path) -> None:
-    """Remove the pre-commit exclude that only the RUB branding SVGs need."""
-    text = path.read_text(encoding="utf-8")
-    text = replace_once(
-        text,
-        indent(
-            dedent("""\
-        - id: end-of-file-fixer
-          exclude: >-
-            (?x)^(
-              .*/.*\\.svg$
-            )$
-        """),
-            "      ",
-        ),
-        "      - id: end-of-file-fixer\n",
-        path,
-    )
-    path.write_text(text, encoding="utf-8")
 
 
 def remove_rub_files(docs: Path) -> None:

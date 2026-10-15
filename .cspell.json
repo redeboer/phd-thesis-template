@@ -38,7 +38,6 @@
     ".prettierignore",
     ".vscode/*",
     "docs/preamble/before-body.tex",
-    "docs/themes/**/*.svg",
     "LICENSE",
     "pyproject.toml"
   ],

@@ -24,10 +24,6 @@ repos:
       - id: check-merge-conflict
       - id: check-yaml
       - id: end-of-file-fixer
-        exclude: >-
-          (?x)^(
-            .*/.*\.svg$
-          )$
       - id: mixed-line-ending
       - id: trailing-whitespace
 
