@@ -1,11 +1,15 @@
+project:
+  resources:
+    - themes/rub/fonts/*.txt
+
 book:
   description: PhD thesis, Ruhr University Bochum
-  favicon: themes/rub/images/favicon.ico
+  favicon: themes/rub/images/favicon.svg
   output-file: thesis-rub
   navbar:
     background: "#003560"
     collapse: false
-    foreground: "#e7e7e7"
+    foreground: "#ffffff"
     logo: themes/rub/images/rub-white.svg
     right:
       - icon: download
@@ -23,7 +27,7 @@ book:
             text: PDF (hardcover)
             icon: file-pdf-fill
   sidebar:
-    logo: themes/rub/images/rub-text.svg
+    logo: themes/rub/images/rub-blue.svg
 
 rub-theme: true
 

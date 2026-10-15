@@ -1,7 +1,20 @@
+% cspell:ignore RUBInter
 \usepackage{changepage}
 \usepackage{tikz}
 
 \definecolor{RUBblue}{RGB}{0, 53, 96}
-\definecolor{RUBgreen}{RGB}{141, 174, 16}
-\definecolor{RUBgray}{RGB}{231, 231, 231}
+\definecolor{RUBlightblue}{RGB}{220, 235, 251}
+\foreach \RUBfont in {Regular,Italic,SemiBold,ExtraBold}{
+  \IfFileExists{themes/rub/fonts/RUBInter-\RUBfont.ttf}{}{%
+    \PackageError{RUB theme}{Missing RUB Inter fonts. Run pixi run rub-assets}{Download the official fonts before rendering the RUB PDF.}%
+  }
+}
+\newfontfamily\RUBtitlefont{RUBInter}[
+  Path=themes/rub/fonts/,
+  Extension=.ttf,
+  UprightFont=*-Regular,
+  BoldFont=*-SemiBold,
+  ItalicFont=*-Italic
+]
+\newfontfamily\RUBheadingfont{RUBInter-ExtraBold.ttf}[Path=themes/rub/fonts/]
 \newcommand{\RUBtheme}{}

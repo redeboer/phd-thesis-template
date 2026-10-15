@@ -5,3 +5,14 @@ __pycache__/
 .venv/
 *.py[cod]
 /.luarc.json
+/docs/themes/rub/fonts/
+/docs/themes/rub/images/
+
+# Local agent configuration
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+.agents/
+.claude/
+.codex/
+.gemini/

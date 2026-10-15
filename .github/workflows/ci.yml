@@ -25,6 +25,7 @@ jobs:
       pages: write
       id-token: write
     with:
+      apt-packages: texlive-fonts-extra texlive-latex-extra texlive-luatex
       gh-pages: true
   style:
     secrets:

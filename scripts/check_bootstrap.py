@@ -44,6 +44,8 @@ def copy_repository(source: Path, target: Path) -> None:
             continue
         relative_path = Path(relative_bytes.decode())
         source_path = source / relative_path
+        if not source_path.exists():
+            continue
         target_path = target / relative_path
         target_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source_path, target_path)
@@ -145,6 +147,7 @@ def validate_repository(root: Path, profile: str) -> None:
         "bootstrap",
         "rub",
         "rub-hardcover",
+        "rub-html",
         "rub-paperback",
         "test-bootstrap",
         "test-filters",
@@ -158,10 +161,17 @@ def validate_repository(root: Path, profile: str) -> None:
         raise BootstrapRegressionError(message)
     validate_index(root, profile)
     validate_license(root, profile)
+    validate_downloaded_logos(root, should_exist=False)
     if profile == "general":
         validate_rub_removal(root)
     else:
         validate_general_removal(root)
+        assert_sequence(
+            tasks["html"]["depends-on"],
+            ["rub-assets"],
+            profile,
+            task="html",
+        )
 
     subprocess.run(
         ["uv", "run", "quarto", "inspect", "docs"],
@@ -171,6 +181,16 @@ def validate_repository(root: Path, profile: str) -> None:
     )
     subprocess.run(["uv", "run", "ruff", "check", "."], check=True, cwd=root)
     subprocess.run(["pixi", "run", "html"], check=True, cwd=root)
+    validate_downloaded_logos(root, should_exist=profile == "rub")
+
+
+def validate_downloaded_logos(root: Path, *, should_exist: bool) -> None:
+    """Check that only a RUB build fetches the ignored logos."""
+    directory = root / "docs" / "themes" / "rub" / "images"
+    for name in ("favicon.svg", "rub-blue.svg", "rub-logo.pdf", "rub-white.svg"):
+        if (directory / name).is_file() != should_exist:
+            message = f"Unexpected downloaded RUB logo state for {name}"
+            raise BootstrapRegressionError(message)
 
 
 def validate_index(root: Path, profile: str) -> None:
@@ -219,9 +239,9 @@ def validate_rub_removal(root: Path) -> None:
             if term in text:
                 message = f"RUB mention {term!r} remains in {relative_path} for general"
                 raise BootstrapRegressionError(message)
-    hook_text = (root / ".pre-commit-config.yaml").read_text(encoding="utf-8")
-    if ".svg" in hook_text:
-        message = "The RUB-only SVG pre-commit exclude remains for general"
+    tasks = tomllib.loads((root / "pixi.toml").read_text(encoding="utf-8"))["tasks"]
+    if "rub-assets" in tasks:
+        message = "RUB-only Pixi task 'rub-assets' remains for general"
         raise BootstrapRegressionError(message)
 
 
