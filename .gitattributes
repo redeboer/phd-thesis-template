@@ -1,1 +1,3 @@
 pixi.lock linguist-language=YAML linguist-generated=true
+*.pdf binary
+*.ttf binary

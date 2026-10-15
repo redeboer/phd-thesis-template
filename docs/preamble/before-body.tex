@@ -6,35 +6,28 @@ $if(title)$
 \begin{titlepage}
   \thispagestyle{empty}
 $if(rub-theme)$
-  \def\RightBarWidth{2.6cm}
-  \def\BottomBarHeight{1.6cm}
   \begin{tikzpicture}[remember picture,overlay]
-    \fill[RUBgray]
-      ([xshift=-\RightBarWidth]current page.north east)
-      rectangle (current page.south east);
-    \fill[RUBgray]
-      (current page.south west)
-      rectangle
-      ([xshift=-\RightBarWidth,yshift=\BottomBarHeight]current page.south east);
-    \node[anchor=north east,inner sep=0pt]
-      at ([xshift=-0.5*\RightBarWidth]current page.north east)
-      {\includegraphics[height=4cm]{themes/rub/images/rub-logo.pdf}};
     \node[anchor=north west,inner sep=0pt]
-      at ([xshift=0.5*\RightBarWidth,yshift=-0.5cm]current page.north west)
-      {\includegraphics[width=8.5cm]{themes/rub/images/rub-text.pdf}};
+      at ([xshift=1cm,yshift=-1cm]current page.north west)
+      {\includegraphics[height=2.5cm]{themes/rub/images/rub-logo.pdf}};
+    \fill[RUBlightblue,rounded corners=3mm]
+      ([xshift=1cm,yshift=1cm]current page.south west)
+      rectangle ([xshift=-1cm,yshift=2cm]current page.south east);
   \end{tikzpicture}
 
-  \begin{adjustwidth}{0.25cm}{\RightBarWidth}
+  \begin{adjustwidth}{0cm}{0cm}
+    \RUBtitlefont
+    \color{RUBblue}
     \centering
     \vspace*{\fill}
-    {\Huge\bfseries $title$\par}
+    {\Huge\RUBheadingfont $title$\par}
 $if(subtitle)$
     \vspace{3ex}
-    {\Large\bfseries $subtitle$\par}
+    {\Large\RUBheadingfont $subtitle$\par}
 $endif$
     \vfill
     \begin{otherlanguage}{german}
-      {\Large\scshape Dissertation\par}
+      {\Large\bfseries Dissertation\par}
       \vspace{2ex}
       zur Erlangung des Grades eines\\
       $thesis.degree$\\

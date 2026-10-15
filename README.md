@@ -52,8 +52,10 @@ After setup, replace the example chapters and front matter under `docs/`, add so
 
 The template includes an optional [Ruhr University Bochum](https://www.ruhr-uni-bochum.de/en) [project profile](https://quarto.org/docs/projects/profiles.html). Selecting `rub` during bootstrap makes it the main configuration, so the standard Pixi tasks build the RUB thesis. The general profile uses a supervisor and examiner; the RUB title page instead uses first and second examiners.
 
+Run `pixi run rub-fonts` before building the RUB website; PDF tasks download the fonts automatically. See [branding asset notes](docs/themes/rub/README.md).
+
 > [!IMPORTANT]
-> The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://services.ruhr-uni-bochum.de/de/corporate-design-der-ruhr-universitaet-bochum). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
+> The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://markenportal.ruhr-uni-bochum.de/corporate-design/). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
 
 The Methods chapter contains an [executable Jupyter example](https://quarto.org/docs/computations/python.html) demonstrating cached computation and [code presentation controls](https://quarto.org/docs/output-formats/html-code.html). Replace it with your analysis or remove it and its dependencies for a prose-only thesis.
 

@@ -230,11 +230,21 @@ def apply_answers(root: Path, answers: Answers) -> None:
         main_text = apply_rub_configuration(main_text, main_path, answers)
         rub_path.unlink()
         (docs / "favicon.ico").unlink()
+        task_text = task_text.replace(
+            'depends-on = ["_tinytex"]', 'depends-on = ["_tinytex", "rub-fonts"]'
+        )
     else:
         main_text = apply_general_configuration(main_text, main_path)
         remove_rub_spelling_configuration(root)
         remove_rub_hook_exclude(root / ".pre-commit-config.yaml")
         remove_rub_files(docs)
+        task_text = remove_pixi_task(task_text, task_path, "rub-fonts")
+        task_text = replace_once(
+            task_text,
+            '[tasks.linkcheck]\ncmd = "uv run lychee ."\ndepends-on = ["rub-fonts"]',
+            '[tasks.linkcheck]\ncmd = "uv run lychee ."',
+            task_path,
+        )
     resolve_rub_branches(
         docs / "preamble" / "before-body.tex",
         keep_rub=answers.profile is Profile.RUB,
@@ -445,6 +455,7 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
     """Make the RUB configuration the repository's main Quarto configuration."""
     rub = require_rub_answers(answers)
     replacements = {
+        "  output-dir: _build/html\n": "  output-dir: _build/html\n  resources:\n    - themes/rub/fonts/*.txt\n",
         dedent("""\
         profile:
           group:
@@ -483,7 +494,7 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
         ): indent(
             dedent("""\
           description: PhD thesis, Ruhr University Bochum
-          favicon: themes/rub/images/favicon.ico
+          favicon: themes/rub/images/favicon.svg
           chapters:
         """),
             "  ",
@@ -500,7 +511,7 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
           navbar:
             background: "#003560"
             collapse: false
-            foreground: "#e7e7e7"
+            foreground: "#ffffff"
             logo: themes/rub/images/rub-white.svg
             right:
               - icon: download
@@ -518,7 +529,7 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
                     text: PDF (hardcover)
                     icon: file-pdf-fill
           sidebar:
-            logo: themes/rub/images/rub-text.svg
+            logo: themes/rub/images/rub-blue.svg
           page-navigation: true
         """),
             "  ",
@@ -692,9 +703,15 @@ def configure_documentation(path: Path, profile: Profile) -> None:
     if profile is not Profile.RUB:
         text = replace_once(
             text,
+            "Run `pixi run rub-fonts` before building the RUB website; PDF tasks download the fonts automatically. See [branding asset notes](docs/themes/rub/README.md).\n\n",
+            "",
+            path,
+        )
+        text = replace_once(
+            text,
             dedent("""\
             > [!IMPORTANT]
-            > The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://services.ruhr-uni-bochum.de/de/corporate-design-der-ruhr-universitaet-bochum). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
+            > The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://markenportal.ruhr-uni-bochum.de/corporate-design/). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
 
             """),
             "",

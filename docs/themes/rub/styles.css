@@ -1,25 +1,110 @@
+/* cspell:ignore RUBInter */
+@font-face {
+  font-family: "RUB Inter";
+  src: url("fonts/RUBInter-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "RUB Inter";
+  src: url("fonts/RUBInter-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "RUB Inter";
+  src: url("fonts/RUBInter-SemiBold.ttf") format("truetype");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "RUB Inter";
+  src: url("fonts/RUBInter-ExtraBold.ttf") format("truetype");
+  font-weight: 800 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --thesis-accent: #8dae10;
   --rub-blue: #003560;
-  --rub-green: #8dae10;
-  --rub-yellow: #ffcc00;
+  --rub-lightblue: #dcebfb;
+  --thesis-accent: var(--rub-blue);
+}
+
+body {
+  font-family: "RUB Inter", Arial, sans-serif;
+}
+
+body.quarto-dark {
+  --thesis-accent: var(--rub-lightblue);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 800;
 }
 
 .navbar {
   background-color: var(--rub-blue);
 }
 
-.navbar-logo {
-  height: 30px;
+.navbar-brand {
+  padding: 8px;
 }
 
-.dropdown-item:hover {
-  color: #ffffff;
-  background: var(--rub-green);
+.navbar-logo {
+  height: 40px;
+  max-height: none;
+  width: auto;
+  max-width: none;
+}
+
+.sidebar-logo {
+  padding: 8px;
+  background-color: #ffffff;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  color: var(--rub-blue);
+  background-color: var(--rub-lightblue);
 }
 
 .navbar-title:hover,
-.nav-link:hover,
-.sidebar-link:hover {
-  color: var(--rub-yellow);
+.navbar-title:focus,
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.sidebar-link:hover,
+.sidebar-link:focus {
+  color: var(--thesis-accent);
+  text-decoration: underline;
+}
+
+#quarto-sidebar .sidebar-item .sidebar-link.active,
+#TOC a.nav-link {
+  color: var(--thesis-accent);
+}
+
+#TOC .nav-link.active {
+  border-left-color: var(--thesis-accent);
+}
+
+@media (max-width: 575.98px) {
+  .navbar-brand-container .navbar-brand:not(.navbar-brand-logo) {
+    display: none;
+  }
 }

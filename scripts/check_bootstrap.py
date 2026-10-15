@@ -44,6 +44,8 @@ def copy_repository(source: Path, target: Path) -> None:
             continue
         relative_path = Path(relative_bytes.decode())
         source_path = source / relative_path
+        if not source_path.exists():
+            continue
         target_path = target / relative_path
         target_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source_path, target_path)
