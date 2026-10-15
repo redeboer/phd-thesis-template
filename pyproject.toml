@@ -28,6 +28,11 @@ package-manager = "pixi+uv"
 no-cspell-update = true
 
 [tool.compwa.policy.github]
+doc-apt-packages = [
+    "texlive-fonts-extra",
+    "texlive-latex-extra",
+    "texlive-luatex",
+]
 keep-workflow = ["upgrade.yml"]
 no-cd = true
 no-milestones = true
