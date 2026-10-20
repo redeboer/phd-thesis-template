@@ -29,10 +29,10 @@ jobs:
       - name: Check PR state and built commit
         id: preview
         env:
-          GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
           BUILT_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ github.token }}
           PR_ACTION: ${{ github.event.action }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           if [ -z "$PR_NUMBER" ]; then exit 0; fi
           gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" > "$RUNNER_TEMP/preview-pr.json"
