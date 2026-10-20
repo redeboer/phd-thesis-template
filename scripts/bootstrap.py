@@ -709,7 +709,7 @@ def configure_documentation(path: Path, profile: Profile) -> None:
     )
     text = replace_once(
         text,
-        "Pull requests from this repository are published separately at `https://redeboer.github.io/phd-thesis-template-preview/pr-N/`, with the RUB example under `rub/`. CI reuses its completed Pages artifact, serializes publishing to preserve other previews, links both themes from the CI summary and PR, and removes the preview on close or merge. The preview repository serves its `main` branch through GitHub Pages. The existing `PAT` secret needs Contents write access there and permission to comment on PRs here. Fork PRs are not published. Bootstrap removes this template-only CI configuration.\n\n",
+        "Pull requests from this repository are published separately at `https://redeboer.github.io/phd-thesis-template-preview/pr-N/`, with the RUB example under `rub/`. A dependent PR CI job reuses the completed Pages artifact, so the PR can introduce and test its own publisher. It serializes publishing to preserve other previews, links both themes from the CI summary and PR, and removes the preview on close or merge. The preview repository serves its `main` branch through GitHub Pages. The existing `PAT` secret needs Contents write access there and permission to comment on PRs here. Fork PRs are not published. Bootstrap removes this template-only CI configuration.\n\n",
         "",
         path,
     )
@@ -864,6 +864,12 @@ def remove_template_files(root: Path) -> None:
         'keep-workflow = ["upgrade.yml"]',
         policy,
     )
+    text = replace_once(
+        text,
+        "# The template maintains a custom CI job for PR publishing.\nno-github-actions = true\n",
+        "",
+        policy,
+    )
     text = re.sub(
         r"# Deployment URLs[^\n]*\nexclude = \[.*?\]\n",
         "",
@@ -872,6 +878,12 @@ def remove_template_files(root: Path) -> None:
         flags=re.DOTALL,
     )
     policy.write_text(text, encoding="utf-8")
+    ci = root / ".github" / "workflows" / "ci.yml"
+    text, separator, _ = ci.read_text(encoding="utf-8").partition("\n  pr-preview:\n")
+    if not separator:
+        message = f"Missing template preview job in {ci}"
+        raise RuntimeError(message)
+    ci.write_text(text.rstrip() + "\n", encoding="utf-8")
     template_files = (
         root / ".github" / "workflows" / "pr-preview.yml",
         root / ".github" / "workflows" / "test-bootstrap.yml",

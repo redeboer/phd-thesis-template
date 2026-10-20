@@ -3,9 +3,10 @@ name: PR preview
 # cspell:ignore elif marocchino rossjrw
 
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
+  workflow_call:
+    secrets:
+      token:
+        required: true
   pull_request:
     types: [closed]
 
@@ -23,24 +24,24 @@ jobs:
     name: Publish or remove PR preview
     if: >-
       github.repository == 'redeboer/phd-thesis-template' &&
-      (github.event_name == 'pull_request' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-        github.event.workflow_run.event == 'pull_request'))
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
     steps:
       - name: Check PR state and built commit
         id: preview
         env:
           GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number }}
-          BUILT_SHA: ${{ github.event.workflow_run.head_sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BUILT_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_ACTION: ${{ github.event.action }}
         run: |
           if [ -z "$PR_NUMBER" ]; then exit 0; fi
           gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" > "$RUNNER_TEMP/preview-pr.json"
           if ! jq -e --arg repo "$GITHUB_REPOSITORY" '.head.repo.full_name == $repo' "$RUNNER_TEMP/preview-pr.json" > /dev/null; then
             exit 0
           fi
-          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+          if [ "$PR_ACTION" = closed ]; then
             echo "action=remove" >> "$GITHUB_OUTPUT"
           elif jq -e --arg sha "$BUILT_SHA" '.state == "open" and .head.sha == $sha' "$RUNNER_TEMP/preview-pr.json" > /dev/null; then
             echo "action=deploy" >> "$GITHUB_OUTPUT"
@@ -59,8 +60,6 @@ jobs:
         with:
           name: github-pages
           path: preview-artifact
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ github.token }}
       - name: Extract Pages artifact
         if: steps.preview.outputs.action == 'deploy'
         run: |
@@ -71,7 +70,7 @@ jobs:
         if: steps.preview.outputs.action != ''
         uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9 # v1.8.1
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.token || secrets.PAT }}
           deploy-repository: redeboer/phd-thesis-template-preview
           preview-branch: main
           umbrella-dir: .

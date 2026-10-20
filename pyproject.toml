@@ -35,6 +35,8 @@ doc-apt-packages = [
 ]
 keep-workflow = ["pr-preview.yml", "upgrade.yml"]
 no-cd = true
+# The template maintains a custom CI job for PR publishing.
+no-github-actions = true
 no-milestones = true
 upgrade-frequency = "semiannually"
 

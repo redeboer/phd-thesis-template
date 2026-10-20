@@ -196,6 +196,9 @@ def validate_preview_cleanup(root: Path, profile: str) -> None:
         message = f"Template preview workflow configuration remains for {profile}"
         raise BootstrapRegressionError(message)
     policy = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
+    if policy["tool"]["compwa"]["policy"]["github"].get("no-github-actions"):
+        message = f"Custom template CI policy remains for {profile}"
+        raise BootstrapRegressionError(message)
     if (
         "pr-preview.yml"
         in policy["tool"]["compwa"]["policy"]["github"]["keep-workflow"]

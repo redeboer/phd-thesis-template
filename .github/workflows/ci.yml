@@ -31,3 +31,18 @@ jobs:
     secrets:
       token: ${{ secrets.PAT }}
     uses: ComPWA/actions/.github/workflows/style.yml@313866498eb92c341d7e6b905e09f33a5979dffb # v4.1.4
+
+  pr-preview:
+    name: PR preview
+    if: >-
+      github.repository == 'redeboer/phd-thesis-template' &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    needs: [doc]
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: write
+    secrets:
+      token: ${{ secrets.PAT }}
+    uses: ./.github/workflows/pr-preview.yml

@@ -64,7 +64,7 @@ def write_summary(site_url: str) -> None:
             stream.write(
                 "> [!TIP]\n"
                 f"> PR preview: [General theme]({site_url}) · [RUB theme]({site_url}rub/).\n"
-                "> Publication follows successful CI once the PR preview workflow is on the default branch. See that workflow for deployment status.\n"
+                "> Publication follows the successful documentation checks. See the PR preview job for deployment status.\n"
             )
 
 
