@@ -12,10 +12,6 @@ A reusable [Quarto](https://quarto.org) book template for writing and publishing
 
 The template builds itself with placeholder content, so its own output is a live example of what you get: [general theme](https://redeboer.github.io/phd-thesis-template) and [RUB theme](https://redeboer.github.io/phd-thesis-template/rub).
 
-For this template repository, `pixi run doc` stages both examples in `docs/_build/html` for a single Pages deployment, with RUB under `rub/`. The publishing step runs only when `GITHUB_REPOSITORY=redeboer/phd-thesis-template`; it adds the preview link to the generated landing page without changing the Quarto sources. Standalone RUB tasks write to `docs/_build/rub`. Bootstrap removes the example publishing step and keeps the selected thesis at the website root.
-
-Pull requests from this repository are published separately at `https://redeboer.github.io/phd-thesis-template-preview/pr-N/`, with the RUB example under `rub/`. A dependent PR CI job reuses the completed Pages artifact, so the PR can introduce and test its own publisher. It serializes publishing to preserve other previews, links both themes from the CI summary and PR, and removes the preview on close or merge. The preview repository serves its `main` branch through GitHub Pages. The existing `PAT` secret needs Contents write access there and permission to comment on PRs here. Fork PRs are not published. Bootstrap removes this template-only CI configuration.
-
 > [!NOTE]
 > This template is intended to remain compatible with Quarto v1. Quarto v2 is being developed separately in [`quarto-dev/q2`](https://github.com/quarto-dev/q2), and is not currently a compatibility target.
 
