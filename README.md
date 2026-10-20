@@ -10,7 +10,7 @@
 
 A reusable [Quarto](https://quarto.org) book template for writing and publishing a PhD thesis. It is based on the structure of [`redeboer/phd-thesis`](https://github.com/redeboer/phd-thesis), with the thesis-specific prose, figures, branding, and scientific dependencies removed.
 
-The template builds itself with placeholder content, so its own output is a live example of what you get: [general theme](https://redeboer.github.io/phd-thesis-template/) and [RUB theme](https://redeboer.github.io/phd-thesis-template/rub/).
+The template builds itself with placeholder content, so its own output is a live example of what you get: [general theme](https://redeboer.github.io/phd-thesis-template) and [RUB theme](https://redeboer.github.io/phd-thesis-template/rub).
 
 For this template repository, `pixi run doc` stages both examples in `docs/_build/html` for a single Pages deployment, with RUB under `rub/`. The publishing step runs only when `GITHUB_REPOSITORY=redeboer/phd-thesis-template`; it adds the preview link to the generated landing page without changing the Quarto sources. Standalone RUB tasks write to `docs/_build/rub`. Bootstrap removes the example publishing step and keeps the selected thesis at the website root.
 
@@ -48,7 +48,7 @@ uv sync
 pixi run bootstrap
 ```
 
-Pixi installs native conda-forge dependencies and runs project tasks, while [uv](https://docs.astral.sh/uv/) creates the locked Python environment. The one-shot bootstrap CLI configures either the general thesis or the RUB variant, then removes template-only validation tooling. Run `pixi run bootstrap --help` for non-interactive options and review the result with `git diff`.
+Pixi installs native conda-forge dependencies and runs project tasks, while [uv](https://docs.astral.sh/uv) creates the locked Python environment. The one-shot bootstrap CLI configures either the general thesis or the RUB variant, then removes template-only validation tooling. Run `pixi run bootstrap --help` for non-interactive options and review the result with `git diff`.
 
 After setup, replace the example chapters and front matter under `docs/`, add sources to `docs/references.bib`, and use [Quarto's citation syntax](https://quarto.org/docs/authoring/citations.html). Run `pixi task list` to see the available tasks; `pixi run html` builds the website. [PDF rendering](https://quarto.org/docs/output-formats/pdf-engine.html) requires a TeX distribution: the PDF tasks install TinyTeX through Quarto on first run if no TeX engine is found.
 
@@ -59,7 +59,7 @@ The template includes an optional [Ruhr University Bochum](https://www.ruhr-uni-
 Run `pixi run rub-html` to preview the RUB website, or `pixi run rub-assets` to download only its assets. The website pairs the full navbar logo with the square RUB cube in the sidebar. RUB builds fetch the unchanged logos from the official [logo archive](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/10/RUB_Logo.zip) and [RUB Inter](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/09/RUB_Inter.zip) on demand. The fonts retain their [SIL Open Font License](https://github.com/rsms/inter/blob/v4.1/LICENSE.txt).
 
 > [!IMPORTANT]
-> The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://markenportal.ruhr-uni-bochum.de/corporate-design/). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
+> The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://markenportal.ruhr-uni-bochum.de/corporate-design). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
 
 The Methods chapter contains an [executable Jupyter example](https://quarto.org/docs/computations/python.html) demonstrating cached computation and [code presentation controls](https://quarto.org/docs/output-formats/html-code.html). Replace it with your analysis or remove it and its dependencies for a prose-only thesis.
 
