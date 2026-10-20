@@ -67,6 +67,7 @@ jobs:
           mkdir preview-site
           tar -xf preview-artifact/artifact.tar -C preview-site
       - name: Publish or remove this PR preview
+        id: deployment
         if: steps.preview.outputs.action != ''
         uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9 # v1.8.1
         with:
@@ -83,6 +84,16 @@ jobs:
           qr-code: false
           deploy-commit-message: "DOC: publish preview for PR #${{ steps.preview.outputs.number }}"
           remove-commit-message: "DOC: remove preview for PR #${{ steps.preview.outputs.number }}"
+      - name: Show preview links in the summary
+        if: steps.preview.outputs.action == 'deploy'
+        env:
+          PREVIEW_URL: ${{ steps.deployment.outputs.preview-url }}
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          > [!TIP]
+          > PR preview is published: [General theme]($PREVIEW_URL) · [RUB theme](${PREVIEW_URL}rub/).
+          EOF
+          echo "::notice title=PR preview::General: $PREVIEW_URL | RUB: ${PREVIEW_URL}rub/"
       - name: Update preview link on the PR
         if: steps.preview.outputs.action != ''
         uses: marocchino/sticky-pull-request-comment@67d0dec7b07ed060a405f9b2a64b8ab319fdd7db # v2.9.2

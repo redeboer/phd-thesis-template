@@ -709,7 +709,7 @@ def configure_documentation(path: Path, profile: Profile) -> None:
     )
     text = replace_once(
         text,
-        "Pull requests from this repository are published separately at `https://redeboer.github.io/phd-thesis-template-preview/pr-N/`, with the RUB example under `rub/`. CI reuses its completed Pages artifact, serializes publishing to preserve other previews, links the preview from the PR, and removes it on close or merge. The preview repository serves its `main` branch through GitHub Pages. The existing `PAT` secret needs Contents write access there and permission to comment on PRs here. Fork PRs are not published. Bootstrap removes this template-only CI configuration.\n\n",
+        "Pull requests from this repository are published separately at `https://redeboer.github.io/phd-thesis-template-preview/pr-N/`, with the RUB example under `rub/`. CI reuses its completed Pages artifact, serializes publishing to preserve other previews, links both themes from the CI summary and PR, and removes the preview on close or merge. The preview repository serves its `main` branch through GitHub Pages. The existing `PAT` secret needs Contents write access there and permission to comment on PRs here. Fork PRs are not published. Bootstrap removes this template-only CI configuration.\n\n",
         "",
         path,
     )

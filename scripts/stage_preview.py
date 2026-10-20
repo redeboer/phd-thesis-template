@@ -55,6 +55,17 @@ def main() -> None:
         index.write_text(
             html.replace(marker, marker + "\n" + CALLOUT, 1), encoding="utf-8"
         )
+    write_summary(site_url)
+
+
+def write_summary(site_url: str) -> None:
+    if site_url != SITE_URL and (summary := os.environ.get("GITHUB_STEP_SUMMARY")):
+        with Path(summary).open("a", encoding="utf-8") as stream:
+            stream.write(
+                "> [!TIP]\n"
+                f"> PR preview: [General theme]({site_url}) · [RUB theme]({site_url}rub/).\n"
+                "> Publication follows successful CI once the PR preview workflow is on the default branch. See that workflow for deployment status.\n"
+            )
 
 
 def render_html(site_url: str) -> None:
