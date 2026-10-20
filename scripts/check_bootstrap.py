@@ -119,6 +119,7 @@ def validate_repository(root: Path, profile: str) -> None:
         "scripts/bootstrap.py",
         "scripts/check_bootstrap.py",
         "scripts/check_filters.py",
+        "scripts/stage_preview.py",
     ):
         if (root / relative_path).exists():
             message = f"Bootstrap did not remove {relative_path} for {profile}"
@@ -158,6 +159,9 @@ def validate_repository(root: Path, profile: str) -> None:
     expected_all = 'depends-on = [\n    "style",\n    "linkcheck",\n    "doc",\n]'
     if expected_all not in task_text:
         message = f"Pixi task dependencies were not preserved multiline for {profile}"
+        raise BootstrapRegressionError(message)
+    if "cmd" in tasks["doc"]:
+        message = f"Template publishing command remains for {profile}"
         raise BootstrapRegressionError(message)
     validate_index(root, profile)
     validate_license(root, profile)

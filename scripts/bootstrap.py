@@ -697,6 +697,18 @@ def configure_documentation(path: Path, profile: Profile) -> None:
     text = path.read_text(encoding="utf-8")
     text = replace_once(
         text,
+        "The template builds itself with placeholder content, so its own output is a live example of what you get: [general theme](https://redeboer.github.io/phd-thesis-template/) and [RUB theme](https://redeboer.github.io/phd-thesis-template/rub/).",
+        "",
+        path,
+    )
+    text = replace_once(
+        text,
+        "For this template repository, `pixi run doc` stages both examples in `docs/_build/html` for a single Pages deployment, with RUB under `rub/`. The publishing step runs only when `GITHUB_REPOSITORY=redeboer/phd-thesis-template`; it adds the preview link to the generated landing page without changing the Quarto sources. Standalone RUB tasks write to `docs/_build/rub`. Bootstrap removes the example publishing step and keeps the selected thesis at the website root.\n\n",
+        "",
+        path,
+    )
+    text = replace_once(
+        text,
         "The one-shot bootstrap CLI configures either the general thesis or the RUB variant, then removes",
         "The one-shot bootstrap CLI configures the thesis, then removes",
         path,
@@ -801,6 +813,9 @@ def remove_sequence_item(text: str, path: Path, *, table: str, item: str) -> str
 def remove_template_tasks(text: str, path: Path) -> str:
     """Remove Pixi tasks that only validate or configure the template."""
     text = replace_once(
+        text, 'cmd = "uv run python scripts/stage_preview.py"\n', "", path
+    )
+    text = replace_once(
         text,
         'description = "Build every supported thesis format and test the Lua filters"',
         'description = "Build every supported thesis format"',
@@ -841,6 +856,7 @@ def remove_template_files(root: Path) -> None:
         root / "scripts" / "bootstrap.py",
         root / "scripts" / "check_bootstrap.py",
         root / "scripts" / "check_filters.py",
+        root / "scripts" / "stage_preview.py",
     )
     for path in template_files:
         path.unlink()
