@@ -467,7 +467,7 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
     """Make the RUB configuration the repository's main Quarto configuration."""
     rub = require_rub_answers(answers)
     replacements = {
-        "  output-dir: _build/html\n": "  output-dir: _build/html\n  resources:\n    - themes/rub/fonts/*.txt\n",
+        "  resources:\n": "  resources:\n    - themes/rub/fonts/*.txt\n",
         dedent("""\
         profile:
           group:
@@ -541,7 +541,7 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
                     text: PDF (hardcover)
                     icon: file-pdf-fill
           sidebar:
-            logo: themes/rub/images/rub-blue.svg
+            logo: themes/rub/images/rub-cube.svg
           page-navigation: true
         """),
             "  ",
@@ -697,6 +697,12 @@ def configure_documentation(path: Path, profile: Profile) -> None:
     text = path.read_text(encoding="utf-8")
     text = replace_once(
         text,
+        "The template builds itself with placeholder content, so its own output is a live example of what you get: [general theme](https://redeboer.github.io/phd-thesis-template) and [RUB theme](https://redeboer.github.io/phd-thesis-template/rub).",
+        "",
+        path,
+    )
+    text = replace_once(
+        text,
         "The one-shot bootstrap CLI configures either the general thesis or the RUB variant, then removes",
         "The one-shot bootstrap CLI configures the thesis, then removes",
         path,
@@ -723,7 +729,7 @@ def configure_documentation(path: Path, profile: Profile) -> None:
             text,
             dedent("""\
             > [!IMPORTANT]
-            > The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://markenportal.ruhr-uni-bochum.de/corporate-design/). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
+            > The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://markenportal.ruhr-uni-bochum.de/corporate-design). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
 
             """),
             "",
@@ -801,6 +807,9 @@ def remove_sequence_item(text: str, path: Path, *, table: str, item: str) -> str
 def remove_template_tasks(text: str, path: Path) -> str:
     """Remove Pixi tasks that only validate or configure the template."""
     text = replace_once(
+        text, 'cmd = "uv run python scripts/stage_preview.py"\n', "", path
+    )
+    text = replace_once(
         text,
         'description = "Build every supported thesis format and test the Lua filters"',
         'description = "Build every supported thesis format"',
@@ -836,11 +845,34 @@ def remove_template_files(root: Path) -> None:
     remains in use by the PDF tasks of a bootstrapped thesis. Its ``__init__.py`` is
     kept along with it, so that Ruff does not report an implicit namespace package.
     """
+    policy = root / "pyproject.toml"
+    text = replace_once(
+        policy.read_text(encoding="utf-8"),
+        'keep-workflow = ["pr-preview.yml", "upgrade.yml"]',
+        'keep-workflow = ["upgrade.yml"]',
+        policy,
+    )
+    text = re.sub(
+        r"# Deployment URLs[^\n]*\nexclude = \[.*?\]\n",
+        "",
+        text,
+        count=1,
+        flags=re.DOTALL,
+    )
+    policy.write_text(text, encoding="utf-8")
+    ci = root / ".github" / "workflows" / "ci.yml"
+    text, separator, _ = ci.read_text(encoding="utf-8").partition("\n  pr-preview:\n")
+    if not separator:
+        message = f"Missing template preview job in {ci}"
+        raise RuntimeError(message)
+    ci.write_text(text.rstrip() + "\n", encoding="utf-8")
     template_files = (
+        root / ".github" / "workflows" / "pr-preview.yml",
         root / ".github" / "workflows" / "test-bootstrap.yml",
         root / "scripts" / "bootstrap.py",
         root / "scripts" / "check_bootstrap.py",
         root / "scripts" / "check_filters.py",
+        root / "scripts" / "stage_preview.py",
     )
     for path in template_files:
         path.unlink()

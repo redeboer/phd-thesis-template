@@ -33,7 +33,7 @@ doc-apt-packages = [
     "texlive-latex-extra",
     "texlive-luatex",
 ]
-keep-workflow = ["upgrade.yml"]
+keep-workflow = ["pr-preview.yml", "upgrade.yml"]
 no-cd = true
 no-milestones = true
 upgrade-frequency = "semiannually"

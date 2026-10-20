@@ -1,0 +1,106 @@
+name: PR preview
+
+on:
+  workflow_call:
+    secrets:
+      token:
+        required: true
+  pull_request:
+    types: [closed]
+
+concurrency:
+  group: pr-preview-publishing
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+
+jobs:
+  publish:
+    name: Publish or remove PR preview
+    if: >-
+      github.repository == 'redeboer/phd-thesis-template' &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check PR state and built commit
+        id: preview
+        env:
+          BUILT_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ github.token }}
+          PR_ACTION: ${{ github.event.action }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          if [ -z "$PR_NUMBER" ]; then exit 0; fi
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" > "$RUNNER_TEMP/preview-pr.json"
+          if ! jq -e --arg repo "$GITHUB_REPOSITORY" '.head.repo.full_name == $repo' "$RUNNER_TEMP/preview-pr.json" > /dev/null; then
+            exit 0
+          fi
+          if [ "$PR_ACTION" = closed ]; then
+            echo "action=remove" >> "$GITHUB_OUTPUT"
+          # cspell:ignore elif
+          elif jq -e --arg sha "$BUILT_SHA" '.state == "open" and .head.sha == $sha' "$RUNNER_TEMP/preview-pr.json" > /dev/null; then
+            echo "action=deploy" >> "$GITHUB_OUTPUT"
+          else
+            exit 0
+          fi
+          echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.preview.outputs.action != ''
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Download completed documentation
+        if: steps.preview.outputs.action == 'deploy'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: github-pages
+          path: preview-artifact
+      - name: Extract Pages artifact
+        if: steps.preview.outputs.action == 'deploy'
+        run: |
+          mkdir preview-site
+          tar -xf preview-artifact/artifact.tar -C preview-site
+      - name: Publish or remove this PR preview
+        id: deployment
+        if: steps.preview.outputs.action != ''
+        # cspell:ignore rossjrw
+        uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9 # v1.8.1
+        with:
+          token: ${{ secrets.token || secrets.PAT }}
+          deploy-repository: redeboer/phd-thesis-template-preview
+          preview-branch: main
+          umbrella-dir: .
+          source-dir: preview-site
+          pages-base-url: redeboer.github.io/phd-thesis-template-preview
+          action: ${{ steps.preview.outputs.action }}
+          pr-number: ${{ steps.preview.outputs.number }}
+          wait-for-pages-deployment: true
+          comment: false
+          qr-code: false
+          deploy-commit-message: "DOC: publish preview for PR #${{ steps.preview.outputs.number }}"
+          remove-commit-message: "DOC: remove preview for PR #${{ steps.preview.outputs.number }}"
+      - name: Show preview links in the summary
+        if: steps.preview.outputs.action == 'deploy'
+        env:
+          PREVIEW_URL: ${{ steps.deployment.outputs.preview-url }}
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          > [!TIP]
+          > PR preview is published: [General theme]($PREVIEW_URL) · [RUB theme](${PREVIEW_URL}rub/).
+          EOF
+          echo "::notice title=PR preview::General: $PREVIEW_URL | RUB: ${PREVIEW_URL}rub/"
+      - name: Update preview link on the PR
+        if: steps.preview.outputs.action != ''
+        # cspell:ignore marocchino
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          number: ${{ steps.preview.outputs.number }}
+          header: pr-preview
+          message: >-
+            ${{ steps.preview.outputs.action == 'deploy' &&
+                format('Preview: [general](https://redeboer.github.io/phd-thesis-template-preview/pr-{0}/) · [RUB](https://redeboer.github.io/phd-thesis-template-preview/pr-{0}/rub/).', steps.preview.outputs.number) ||
+                'Preview removed after PR closure.' }}

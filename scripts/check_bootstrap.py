@@ -3,8 +3,6 @@
 # cspell:ignore Boer Remco
 # ruff: file-ignore[suspicious-subprocess-import, subprocess-without-shell-equals-true, start-process-with-partial-path]
 
-from __future__ import annotations
-
 import shutil
 import subprocess
 import tempfile
@@ -114,11 +112,13 @@ def validate_repository(root: Path, profile: str) -> None:
     """Validate files, Pixi tasks, Quarto configuration, and HTML rendering."""
     for relative_path in (
         ".github/workflows/test-bootstrap.yml",
+        ".github/workflows/pr-preview.yml",
         "docs/_quarto-general.yml",
         "scripts/__pycache__",
         "scripts/bootstrap.py",
         "scripts/check_bootstrap.py",
         "scripts/check_filters.py",
+        "scripts/stage_preview.py",
     ):
         if (root / relative_path).exists():
             message = f"Bootstrap did not remove {relative_path} for {profile}"
@@ -159,6 +159,10 @@ def validate_repository(root: Path, profile: str) -> None:
     if expected_all not in task_text:
         message = f"Pixi task dependencies were not preserved multiline for {profile}"
         raise BootstrapRegressionError(message)
+    if "cmd" in tasks["doc"]:
+        message = f"Template publishing command remains for {profile}"
+        raise BootstrapRegressionError(message)
+    validate_preview_cleanup(root, profile)
     validate_index(root, profile)
     validate_license(root, profile)
     validate_downloaded_logos(root, should_exist=False)
@@ -184,10 +188,33 @@ def validate_repository(root: Path, profile: str) -> None:
     validate_downloaded_logos(root, should_exist=profile == "rub")
 
 
+def validate_preview_cleanup(root: Path, profile: str) -> None:
+    ci = (root / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    if "pr-preview" in ci or "closed" in ci:
+        message = f"Template preview workflow configuration remains for {profile}"
+        raise BootstrapRegressionError(message)
+    policy = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
+    if policy["tool"]["compwa"]["policy"]["github"].get("no-github-actions"):
+        message = f"Custom template CI policy remains for {profile}"
+        raise BootstrapRegressionError(message)
+    if (
+        "pr-preview.yml"
+        in policy["tool"]["compwa"]["policy"]["github"]["keep-workflow"]
+    ):
+        message = f"Template workflow policy remains for {profile}"
+        raise BootstrapRegressionError(message)
+
+
 def validate_downloaded_logos(root: Path, *, should_exist: bool) -> None:
     """Check that only a RUB build fetches the ignored logos."""
     directory = root / "docs" / "themes" / "rub" / "images"
-    for name in ("favicon.svg", "rub-blue.svg", "rub-logo.pdf", "rub-white.svg"):
+    for name in (
+        "favicon.svg",
+        "rub-blue.svg",
+        "rub-cube.svg",
+        "rub-logo.pdf",
+        "rub-white.svg",
+    ):
         if (directory / name).is_file() != should_exist:
             message = f"Unexpected downloaded RUB logo state for {name}"
             raise BootstrapRegressionError(message)
@@ -279,4 +306,4 @@ class BootstrapRegressionError(RuntimeError):
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

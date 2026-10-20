@@ -1,6 +1,6 @@
 """Download official RUB fonts and logos without storing them in Git."""
 
-# cspell:ignore Blau CMYK RUBInter Universitaet
+# cspell:ignore Blau CMYK RUBInter Universitaet Wuerfel
 # ruff: file-ignore[print]
 
 from io import BytesIO
@@ -20,6 +20,7 @@ FONT_NAMES = tuple(
 LOGO_FILES = {
     "favicon.svg": "RUB_Logo/Screen RGB/SVG/Ruhr-Universitaet-Bochum_SoMe_Blau_screen_rgb.svg",
     "rub-blue.svg": "RUB_Logo/Screen RGB/SVG/Ruhr-Universitaet-Bochum_Logo_Blau_screen_rgb.svg",
+    "rub-cube.svg": "RUB_Logo/Screen RGB/SVG/Ruhr-Universitaet-Bochum_Wuerfel_Blau_screen_rgb.svg",
     "rub-logo.pdf": "RUB_Logo/Print CMYK/Ruhr-Universitaet-Bochum_Logo_Blau_print_cmyk.pdf",
     "rub-white.svg": "RUB_Logo/Screen RGB/SVG/Ruhr-Universitaet-Bochum_Logo_Weiss_screen_rgb.svg",
 }

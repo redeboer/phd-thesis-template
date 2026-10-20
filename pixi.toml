@@ -26,6 +26,7 @@ cmd = "uv run scripts/bootstrap.py"
 description = "Interactively configure a fresh general or RUB thesis checkout"
 
 [tasks.doc]
+cmd = "uv run python scripts/stage_preview.py"
 depends-on = [
     "html",
     "pdf",
@@ -74,25 +75,25 @@ cmd = "uv run python docs/themes/rub/download_assets.py"
 description = "Download the official RUB fonts and logos into ignored directories"
 
 [tasks.rub-html]
-cmd = "uv run quarto render docs --no-clean --profile=rub --to=html"
+cmd = "uv run quarto render docs --no-clean --profile=rub --output-dir=_build/rub --to=html"
 depends-on = ["rub-assets"]
 description = "Build the website with the optional RUB theme"
 
 [tasks.rub]
 cmd = """
-uv run quarto render docs --no-clean --profile=rub --to=pdf \
-    && uv run quarto render docs --no-clean --profile=rub --to=epub
+uv run quarto render docs --no-clean --profile=rub --output-dir=_build/rub --to=pdf \
+    && uv run quarto render docs --no-clean --profile=rub --output-dir=_build/rub --to=epub
 """
 depends-on = ["_tinytex", "rub-assets"]
 description = "Build the PDF and e-book with the optional RUB theme"
 
 [tasks.rub-hardcover]
-cmd = "uv run quarto render docs --no-clean --profile=hardcover,rub --to=pdf"
+cmd = "uv run quarto render docs --no-clean --profile=hardcover,rub --output-dir=_build/rub --to=pdf"
 depends-on = ["_tinytex", "rub-assets"]
 description = "Build a hardcover PDF with the optional RUB theme"
 
 [tasks.rub-paperback]
-cmd = "uv run quarto render docs --no-clean --profile=paperback,rub --to=pdf"
+cmd = "uv run quarto render docs --no-clean --profile=paperback,rub --output-dir=_build/rub --to=pdf"
 depends-on = ["_tinytex", "rub-assets"]
 description = "Build a paperback PDF with mirrored margins"
 
