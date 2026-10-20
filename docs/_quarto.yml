@@ -1,6 +1,8 @@
 project:
   type: book
   output-dir: _build/html
+  resources:
+    - references.bib
 
 profile:
   group:

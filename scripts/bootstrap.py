@@ -467,7 +467,7 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
     """Make the RUB configuration the repository's main Quarto configuration."""
     rub = require_rub_answers(answers)
     replacements = {
-        "  output-dir: _build/html\n": "  output-dir: _build/html\n  resources:\n    - themes/rub/fonts/*.txt\n",
+        "  resources:\n": "  resources:\n    - themes/rub/fonts/*.txt\n",
         dedent("""\
         profile:
           group:
