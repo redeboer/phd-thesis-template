@@ -44,11 +44,6 @@ upgrade-frequency = "semiannually"
 type-checker = ["ty"]
 
 [tool.lychee]
-# Deployment URLs are checked in the generated site; they may not exist before publishing.
-exclude = [
-    "^https[:]//redeboer[.]github[.]io/phd-thesis-template/rub/",
-    "^https[:]//redeboer[.]github[.]io/phd-thesis-template-preview/",
-]
 exclude_path = [
     "scripts/bootstrap.py",
 ]
