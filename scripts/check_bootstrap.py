@@ -3,8 +3,6 @@
 # cspell:ignore Boer Remco
 # ruff: file-ignore[suspicious-subprocess-import, subprocess-without-shell-equals-true, start-process-with-partial-path]
 
-from __future__ import annotations
-
 import shutil
 import subprocess
 import tempfile
