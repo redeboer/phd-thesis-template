@@ -61,8 +61,7 @@ def write_summary(site_url: str) -> None:
         with Path(summary).open("a", encoding="utf-8") as stream:
             stream.write(
                 "> [!TIP]\n"
-                f"> PR preview: [General theme]({site_url}) · [RUB theme]({site_url}rub/).\n"
-                "> Publication follows the successful documentation checks. See the PR preview job for deployment status.\n"
+                f"> PR preview: [General theme]({site_url}) · [RUB theme]({site_url}rub/)."
             )
 
 
