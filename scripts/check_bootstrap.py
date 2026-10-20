@@ -114,6 +114,7 @@ def validate_repository(root: Path, profile: str) -> None:
     """Validate files, Pixi tasks, Quarto configuration, and HTML rendering."""
     for relative_path in (
         ".github/workflows/test-bootstrap.yml",
+        ".github/workflows/pr-preview.yml",
         "docs/_quarto-general.yml",
         "scripts/__pycache__",
         "scripts/bootstrap.py",
@@ -163,6 +164,7 @@ def validate_repository(root: Path, profile: str) -> None:
     if "cmd" in tasks["doc"]:
         message = f"Template publishing command remains for {profile}"
         raise BootstrapRegressionError(message)
+    validate_preview_cleanup(root, profile)
     validate_index(root, profile)
     validate_license(root, profile)
     validate_downloaded_logos(root, should_exist=False)
@@ -186,6 +188,20 @@ def validate_repository(root: Path, profile: str) -> None:
     subprocess.run(["uv", "run", "ruff", "check", "."], check=True, cwd=root)
     subprocess.run(["pixi", "run", "html"], check=True, cwd=root)
     validate_downloaded_logos(root, should_exist=profile == "rub")
+
+
+def validate_preview_cleanup(root: Path, profile: str) -> None:
+    ci = (root / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    if "pr-preview" in ci or "closed" in ci:
+        message = f"Template preview workflow configuration remains for {profile}"
+        raise BootstrapRegressionError(message)
+    policy = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
+    if (
+        "pr-preview.yml"
+        in policy["tool"]["compwa"]["policy"]["github"]["keep-workflow"]
+    ):
+        message = f"Template workflow policy remains for {profile}"
+        raise BootstrapRegressionError(message)
 
 
 def validate_downloaded_logos(root: Path, *, should_exist: bool) -> None:

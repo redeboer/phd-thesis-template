@@ -709,6 +709,12 @@ def configure_documentation(path: Path, profile: Profile) -> None:
     )
     text = replace_once(
         text,
+        "Pull requests from this repository are published separately at `https://redeboer.github.io/phd-thesis-template-preview/pr-N/`, with the RUB example under `rub/`. CI reuses its completed Pages artifact, serializes publishing to preserve other previews, links the preview from the PR, and removes it on close or merge. The preview repository serves its `main` branch through GitHub Pages. The existing `PAT` secret needs Contents write access there and permission to comment on PRs here. Fork PRs are not published. Bootstrap removes this template-only CI configuration.\n\n",
+        "",
+        path,
+    )
+    text = replace_once(
+        text,
         "The one-shot bootstrap CLI configures either the general thesis or the RUB variant, then removes",
         "The one-shot bootstrap CLI configures the thesis, then removes",
         path,
@@ -851,7 +857,23 @@ def remove_template_files(root: Path) -> None:
     remains in use by the PDF tasks of a bootstrapped thesis. Its ``__init__.py`` is
     kept along with it, so that Ruff does not report an implicit namespace package.
     """
+    policy = root / "pyproject.toml"
+    text = replace_once(
+        policy.read_text(encoding="utf-8"),
+        'keep-workflow = ["pr-preview.yml", "upgrade.yml"]',
+        'keep-workflow = ["upgrade.yml"]',
+        policy,
+    )
+    text = re.sub(
+        r"# Deployment URLs[^\n]*\nexclude = \[.*?\]\n",
+        "",
+        text,
+        count=1,
+        flags=re.DOTALL,
+    )
+    policy.write_text(text, encoding="utf-8")
     template_files = (
+        root / ".github" / "workflows" / "pr-preview.yml",
         root / ".github" / "workflows" / "test-bootstrap.yml",
         root / "scripts" / "bootstrap.py",
         root / "scripts" / "check_bootstrap.py",

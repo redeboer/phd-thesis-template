@@ -33,7 +33,7 @@ doc-apt-packages = [
     "texlive-latex-extra",
     "texlive-luatex",
 ]
-keep-workflow = ["upgrade.yml"]
+keep-workflow = ["pr-preview.yml", "upgrade.yml"]
 no-cd = true
 no-milestones = true
 upgrade-frequency = "semiannually"
@@ -42,6 +42,11 @@ upgrade-frequency = "semiannually"
 type-checker = ["ty"]
 
 [tool.lychee]
+# Deployment URLs are checked in the generated site; they may not exist before publishing.
+exclude = [
+    "^https[:]//redeboer[.]github[.]io/phd-thesis-template/rub/",
+    "^https[:]//redeboer[.]github[.]io/phd-thesis-template-preview/",
+]
 exclude_path = [
     "scripts/bootstrap.py",
 ]

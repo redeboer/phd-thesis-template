@@ -5,41 +5,30 @@
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
 
 REPOSITORY = "redeboer/phd-thesis-template"
-PREVIEW_URL = "https://redeboer.github.io/phd-thesis-template/rub/"
+SITE_URL = "https://redeboer.github.io/phd-thesis-template/"
 CALLOUT = '<p class="alert alert-info" id="rub-preview">Also available: <a href="rub/">RUB theme preview</a>.</p>'
 
 
 def main() -> None:
     if os.environ.get("GITHUB_REPOSITORY") != REPOSITORY:
         return
+    site_url = SITE_URL
+    if match := re.fullmatch(
+        r"refs/pull/(\d+)/merge", os.environ.get("GITHUB_REF", "")
+    ):
+        site_url = (
+            f"https://redeboer.github.io/phd-thesis-template-preview/pr-{match[1]}/"
+        )
     for task in ("rub-paperback", "rub-hardcover"):
         subprocess.run(["pixi", "run", task], check=True)
     output = Path("docs/_build")
-    profile = Path("docs/_quarto-preview.yml")
-    with profile.open("x", encoding="utf-8") as stream:
-        stream.write(f"book:\n  site-url: {PREVIEW_URL}\n")
-    try:
-        subprocess.run(
-            [
-                "uv",
-                "run",
-                "quarto",
-                "render",
-                "docs",
-                "--no-clean",
-                "--profile=rub,preview",
-                "--output-dir=_build/rub",
-                "--to=html",
-            ],
-            check=True,
-        )
-    finally:
-        profile.unlink()
+    render_html(site_url)
     for directory, stem in (("html", "thesis"), ("rub", "thesis-rub")):
         for name in (
             "index.html",
@@ -66,6 +55,38 @@ def main() -> None:
         index.write_text(
             html.replace(marker, marker + "\n" + CALLOUT, 1), encoding="utf-8"
         )
+
+
+def render_html(site_url: str) -> None:
+    profile = Path("docs/_quarto-preview.yml")
+    with profile.open("x", encoding="utf-8") as stream:
+        stream.write(f"book:\n  site-url: {site_url}\n")
+    try:
+        for theme, directory, suffix in (
+            ("general", "html", ""),
+            ("rub", "rub", "rub/"),
+        ):
+            if theme == "general" and site_url == SITE_URL:
+                continue
+            profile.write_text(
+                f"book:\n  site-url: {site_url}{suffix}\n", encoding="utf-8"
+            )
+            subprocess.run(
+                [
+                    "uv",
+                    "run",
+                    "quarto",
+                    "render",
+                    "docs",
+                    "--no-clean",
+                    f"--profile={theme},preview",
+                    f"--output-dir=_build/{directory}",
+                    "--to=html",
+                ],
+                check=True,
+            )
+    finally:
+        profile.unlink()
 
 
 if __name__ == "__main__":
