@@ -76,7 +76,6 @@
     }
   ],
   "livePreview.defaultPreviewPath": "docs/_build/html",
-  "multiDiffEditor.experimental.enabled": true,
   "notebook.codeActionsOnSave": {
     "notebook.source.organizeImports": "explicit"
   },

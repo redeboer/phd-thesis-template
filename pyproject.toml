@@ -35,8 +35,6 @@ doc-apt-packages = [
 ]
 keep-workflow = ["pr-preview.yml", "upgrade.yml"]
 no-cd = true
-# The template maintains a custom CI job for PR publishing.
-no-github-actions = true
 no-milestones = true
 upgrade-frequency = "semiannually"
 
@@ -131,7 +129,7 @@ key-empty = "off"
 
 [[tool.tombi.schemas]]
 root = "tool.compwa.policy"
-path = "https://raw.githubusercontent.com/ComPWA/policy/0.10.1/compwa-policy.schema.json"
+path = "https://raw.githubusercontent.com/ComPWA/policy/97dd21ea6fa86f38bced28b50fd6966c1a63d45e/compwa-policy.schema.json"
 include = ["pyproject.toml"]
 
 [tool.ty.rules]

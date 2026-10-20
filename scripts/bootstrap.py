@@ -850,12 +850,6 @@ def remove_template_files(root: Path) -> None:
         'keep-workflow = ["upgrade.yml"]',
         policy,
     )
-    text = replace_once(
-        text,
-        "# The template maintains a custom CI job for PR publishing.\nno-github-actions = true\n",
-        "",
-        policy,
-    )
     text = re.sub(
         r"# Deployment URLs[^\n]*\nexclude = \[.*?\]\n",
         "",
