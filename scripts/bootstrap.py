@@ -695,19 +695,7 @@ def configure_documentation(path: Path, profile: Profile) -> None:
     text = path.read_text(encoding="utf-8")
     text = replace_once(
         text,
-        "The template builds itself with placeholder content, so its own output is a live example of what you get: [general theme](https://redeboer.github.io/phd-thesis-template/) and [RUB theme](https://redeboer.github.io/phd-thesis-template/rub/).",
-        "",
-        path,
-    )
-    text = replace_once(
-        text,
-        "For this template repository, `pixi run doc` stages both examples in `docs/_build/html` for a single Pages deployment, with RUB under `rub/`. The publishing step runs only when `GITHUB_REPOSITORY=redeboer/phd-thesis-template`; it adds the preview link to the generated landing page without changing the Quarto sources. Standalone RUB tasks write to `docs/_build/rub`. Bootstrap removes the example publishing step and keeps the selected thesis at the website root.\n\n",
-        "",
-        path,
-    )
-    text = replace_once(
-        text,
-        "Pull requests from this repository are published separately at `https://redeboer.github.io/phd-thesis-template-preview/pr-N/`, with the RUB example under `rub/`. A dependent PR CI job reuses the completed Pages artifact, so the PR can introduce and test its own publisher. It serializes publishing to preserve other previews, links both themes from the CI summary and PR, and removes the preview on close or merge. The preview repository serves its `main` branch through GitHub Pages. The existing `PAT` secret needs Contents write access there and permission to comment on PRs here. Fork PRs are not published. Bootstrap removes this template-only CI configuration.\n\n",
+        "The template builds itself with placeholder content, so its own output is a live example of what you get: [general theme](https://redeboer.github.io/phd-thesis-template) and [RUB theme](https://redeboer.github.io/phd-thesis-template/rub).",
         "",
         path,
     )
@@ -731,7 +719,7 @@ def configure_documentation(path: Path, profile: Profile) -> None:
     if profile is not Profile.RUB:
         text = replace_once(
             text,
-            "Run `pixi run rub-html` to preview the RUB website, or `pixi run rub-assets` to download only its assets. The website pairs the full navbar logo with the square RUB cube in the sidebar. RUB builds fetch the unchanged logos from the official [logo archive](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/10/RUB_Logo.zip) and [RUB Inter](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/09/RUB_Inter.zip) on demand. The fonts retain their [SIL Open Font License](https://github.com/rsms/inter/blob/v4.1/LICENSE.txt).\n\n",
+            "Run `pixi run rub-html` to preview the RUB website, or `pixi run rub-assets` to download only its assets. RUB builds fetch the unchanged logos from the official [logo archive](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/10/RUB_Logo.zip) and [RUB Inter](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/09/RUB_Inter.zip) on demand. The fonts retain their [SIL Open Font License](https://github.com/rsms/inter/blob/v4.1/LICENSE.txt).\n\n",
             "",
             path,
         )
@@ -739,7 +727,7 @@ def configure_documentation(path: Path, profile: Profile) -> None:
             text,
             dedent("""\
             > [!IMPORTANT]
-            > The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://markenportal.ruhr-uni-bochum.de/corporate-design/). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
+            > The RUB name and logos are institutional branding governed by Ruhr University Bochum's [corporate-design guidance](https://markenportal.ruhr-uni-bochum.de/corporate-design). Their inclusion in this template does not grant trademark rights or place those assets under the template's Apache licence.
 
             """),
             "",
