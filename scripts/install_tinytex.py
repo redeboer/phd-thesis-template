@@ -4,7 +4,6 @@
 
 import shutil
 import subprocess
-import sys
 
 
 def main() -> None:
@@ -45,4 +44,4 @@ def quarto() -> list[str]:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())
