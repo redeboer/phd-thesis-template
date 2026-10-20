@@ -27,7 +27,7 @@ book:
             text: PDF (hardcover)
             icon: file-pdf-fill
   sidebar:
-    logo: themes/rub/images/rub-blue.svg
+    logo: themes/rub/images/rub-cube.svg
 
 rub-theme: true
 

@@ -187,7 +187,13 @@ def validate_repository(root: Path, profile: str) -> None:
 def validate_downloaded_logos(root: Path, *, should_exist: bool) -> None:
     """Check that only a RUB build fetches the ignored logos."""
     directory = root / "docs" / "themes" / "rub" / "images"
-    for name in ("favicon.svg", "rub-blue.svg", "rub-logo.pdf", "rub-white.svg"):
+    for name in (
+        "favicon.svg",
+        "rub-blue.svg",
+        "rub-cube.svg",
+        "rub-logo.pdf",
+        "rub-white.svg",
+    ):
         if (directory / name).is_file() != should_exist:
             message = f"Unexpected downloaded RUB logo state for {name}"
             raise BootstrapRegressionError(message)

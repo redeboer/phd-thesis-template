@@ -541,7 +541,7 @@ def apply_rub_configuration(text: str, path: Path, answers: Answers) -> str:
                     text: PDF (hardcover)
                     icon: file-pdf-fill
           sidebar:
-            logo: themes/rub/images/rub-blue.svg
+            logo: themes/rub/images/rub-cube.svg
           page-navigation: true
         """),
             "  ",
@@ -715,7 +715,7 @@ def configure_documentation(path: Path, profile: Profile) -> None:
     if profile is not Profile.RUB:
         text = replace_once(
             text,
-            "Run `pixi run rub-html` to preview the RUB website, or `pixi run rub-assets` to download only its assets. RUB builds fetch the unchanged logos from the official [logo archive](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/10/RUB_Logo.zip) and [RUB Inter](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/09/RUB_Inter.zip) on demand. The fonts retain their [SIL Open Font License](https://github.com/rsms/inter/blob/v4.1/LICENSE.txt).\n\n",
+            "Run `pixi run rub-html` to preview the RUB website, or `pixi run rub-assets` to download only its assets. The website pairs the full navbar logo with the square RUB cube in the sidebar. RUB builds fetch the unchanged logos from the official [logo archive](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/10/RUB_Logo.zip) and [RUB Inter](https://markenportal.ruhr-uni-bochum.de/wp-content/uploads/2026/09/RUB_Inter.zip) on demand. The fonts retain their [SIL Open Font License](https://github.com/rsms/inter/blob/v4.1/LICENSE.txt).\n\n",
             "",
             path,
         )
