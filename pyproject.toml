@@ -42,6 +42,10 @@ upgrade-frequency = "semiannually"
 type-checker = ["ty"]
 
 [tool.lychee]
+exclude = [
+    "^https?://redeboer[.]github[.]io/phd-thesis-template-preview/pr-%7B",
+    "^https?://redeboer[.]github[.]io/phd-thesis-template/rub",
+]
 exclude_path = [
     "scripts/bootstrap.py",
 ]
