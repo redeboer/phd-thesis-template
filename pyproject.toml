@@ -44,6 +44,7 @@ type-checker = ["ty"]
 [tool.lychee]
 exclude_path = [
     "scripts/bootstrap.py",
+    "scripts/stage_preview.py",
 ]
 extensions = [
     "bib",
