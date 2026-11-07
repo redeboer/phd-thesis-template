@@ -14,7 +14,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "lychee-bin >=0.24.0",  # pyproject.toml config support
+    "lychee-bin>=0.24.0",  # pyproject.toml config support
     "ruff",
     { include-group = "style" },
 ]
@@ -42,9 +42,12 @@ upgrade-frequency = "semiannually"
 type-checker = ["ty"]
 
 [tool.lychee]
-exclude_path = [
-    "scripts/bootstrap.py",
-    "scripts/stage_preview.py",
+cache = true
+exclude = [
+    # `[:]` stops lychee from extracting these patterns as links from this file.
+    '^https[:]//github\.com/%7B(?:TEMPLATE_REPOSITORY|answers\.repository)%7D$',  # Python f-strings in the bootstrap script
+    '^https[:]//redeboer\.github\.io/phd-thesis-template-preview/pr-%7B0%7D/(?:rub/)?$',  # The workflow supplies the PR number at runtime
+    '^https[:]//redeboer\.github\.io/phd-thesis-template-preview/pr-%7Bmatch\[1\]%7D/$',  # Python f-string in the preview staging script
 ]
 extensions = [
     "bib",
@@ -59,12 +62,30 @@ extensions = [
     "yaml",
     "yml",
 ]
+hidden = true  # Include the workflows under .github/
 include_fragments = "anchor-only"
-insecure = true
+include_verbatim = true
+max_cache_age = "2d"
 max_concurrency = 10
+max_redirects = 0
 max_retries = 3
 no_progress = true
-timeout = 60
+remap = [
+    # `[:]` stops lychee from extracting these patterns as links from this file.
+    '^https[:]//astral\.sh/uv/install\.ps1$ https://releases.astral.sh/installers/uv/latest/uv-installer.ps1',
+    '^https[:]//astral\.sh/uv/install\.sh$ https://releases.astral.sh/installers/uv/latest/uv-installer.sh',
+    '^https[:]//docs\.astral\.sh/uv/getting-started/installation$ https://docs.astral.sh/uv/getting-started/installation/',
+    '^https[:]//docs\.astral\.sh/uv$ https://docs.astral.sh/uv/',
+    '^https[:]//markenportal\.ruhr-uni-bochum\.de/corporate-design$ https://markenportal.ruhr-uni-bochum.de/corporate-design/',
+    '^https[:]//pixi\.sh/$ https://pixi.prefix.dev/',
+    '^https[:]//pixi\.sh/install\.ps1$ https://pixi.prefix.dev/install.ps1',
+    '^https[:]//pixi\.sh/install\.sh$ https://pixi.prefix.dev/install.sh',
+    '^https[:]//pixi\.sh/latest/installation$ https://pixi.prefix.dev/latest/installation/',
+    '^https[:]//redeboer\.github\.io/phd-thesis-template/rub$ https://redeboer.github.io/phd-thesis-template/rub/',
+    '^https[:]//redeboer\.github\.io/phd-thesis-template$ https://redeboer.github.io/phd-thesis-template/',
+]
+retry_wait_time = 5
+timeout = 30
 user_agent = "Mozilla/5.0 (compatible; lychee)"
 
 [tool.ruff]
@@ -130,7 +151,7 @@ key-empty = "off"
 
 [[tool.tombi.schemas]]
 root = "tool.compwa.policy"
-path = "https://raw.githubusercontent.com/ComPWA/policy/0.10.2/compwa-policy.schema.json"
+path = "https://raw.githubusercontent.com/ComPWA/policy/0.10.3/compwa-policy.schema.json"
 include = ["pyproject.toml"]
 
 [tool.ty.rules]
