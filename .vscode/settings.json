@@ -2,7 +2,7 @@
   "[bibtex]": {
     "editor.formatOnSave": false
   },
-  "[css]": {
+  "[css][json][jsonc][markdown][quarto][yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[git-commit]": {
@@ -10,11 +10,7 @@
     "rewrap.wrappingColumn": 72
   },
   "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.wordWrap": "on"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[latex]": {
     "editor.defaultFormatter": "James-Yu.latex-workshop",
@@ -23,26 +19,17 @@
   "[lua]": {
     "editor.defaultFormatter": "sumneko.lua"
   },
-  "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
   "[python]": {
     "editor.codeActionsOnSave": {
       "source.organizeImports": "explicit"
     },
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
-  "[quarto]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
   "[toml]": {
     "editor.defaultFormatter": "tombi-toml.tombi"
   },
   "[xml]": {
     "editor.defaultFormatter": "redhat.vscode-xml"
-  },
-  "[yaml]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "cSpell.enabled": true,
   "diffEditor.experimental.showMoves": true,
