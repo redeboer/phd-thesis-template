@@ -14,7 +14,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "lychee-bin >=0.24.0",  # pyproject.toml config support
+    "lychee-bin>=0.24.0",  # pyproject.toml config support
     "ruff",
     { include-group = "style" },
 ]
