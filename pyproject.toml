@@ -52,6 +52,7 @@ cache_exclude_status = "400.."
 # [:] keeps Lychee from extracting regex patterns as URLs.
 exclude = [
     # `[:]` stops lychee from extracting these patterns as links from this file.
+    '^file[:]//.*/docs/themes/rub/fonts/RUBInter-(?:ExtraBold|Italic|Regular|SemiBold)\.ttf$',  # Downloaded by the RUB build
     '^https[:]//github\.com/%7B(?:TEMPLATE_REPOSITORY|answers\.repository)%7D$',  # Python f-strings in the bootstrap script
     '^https[:]//redeboer\.github\.io/phd-thesis-template-preview/pr-%7B0%7D/(?:rub/)?$',  # The workflow supplies the PR number at runtime
     '^https[:]//redeboer\.github\.io/phd-thesis-template-preview/pr-%7Bmatch\[1\]%7D/$',  # Python f-string in the preview staging script
