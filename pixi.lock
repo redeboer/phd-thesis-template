@@ -96,7 +96,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/libffi-3.7.0-h6b3a05b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/libfreetype-2.14.3-h694c41f_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/libfreetype6-2.14.3-h8afe040_2.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-64/libglib-2.90.1-h7e55108_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-64/libglib-2.90.1-h0c90e38_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/libharfbuzz-15.0.0-h2974713_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/libharfbuzz-devel-15.0.0-h2974713_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/libiconv-1.18-h4ae439b_3.conda
@@ -1175,24 +1175,24 @@ packages:
   run_exports: {}
   size: 366001
   timestamp: 1786641701324
-- conda: https://conda.anaconda.org/conda-forge/osx-64/libglib-2.90.1-h7e55108_0.conda
-  sha256: 7f4eecb3e8f6b9cea71bc8b86ee899695f254e08d0b2746aa7c79b1ce793e5f0
-  md5: 38ab3d302b085306eff1d8704b708c2d
+- conda: https://conda.anaconda.org/conda-forge/osx-64/libglib-2.90.1-h0c90e38_1.conda
+  sha256: 1372d146d4de4c213b76f2a49361e25b2caaa31f49d82d0f9f7b8dd716dd79e1
+  md5: 863ca9e3839fd1d58fbd2eed656bad4d
   depends:
   - __osx >=11.0
   - libffi >=3.7.0,<3.8.0a0
-  - pcre2 >=10.47,<10.48.0a0
-  - libzlib >=1.3.2,<2.0a0
   - libintl >=0.25.1,<1.0a0
+  - pcre2 >=10.47,<10.48.0a0
   - libiconv >=1.18,<2.0a0
+  - libzlib >=1.3.2,<2.0a0
   constrains:
   - glib >2.66
   license: LGPL-2.1-or-later
   run_exports:
     weak:
     - libglib >=2.90.1,<3.0a0
-  size: 4608912
-  timestamp: 1791384237813
+  size: 4609008
+  timestamp: 1794245438196
 - conda: https://conda.anaconda.org/conda-forge/osx-64/libharfbuzz-15.0.0-h2974713_0.conda
   sha256: 9e31792732d0b96493938efa99adc03ee719dc62add2b192dbcbc59b5cf11bab
   md5: 320bba29f3d33ba44f64734dc2dd69e5
