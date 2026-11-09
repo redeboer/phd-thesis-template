@@ -14,11 +14,12 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "lychee-bin>=0.24.0",  # pyproject.toml config support
+    "lychee-bin>=0.24.0",
     "ruff",
+    "ty",
     { include-group = "style" },
 ]
-style = ["ty", { include-group = "types" }]
+style = [{ include-group = "types" }]
 types = ["rich", "typer"]
 
 [tool.compwa.policy]
@@ -40,6 +41,10 @@ upgrade-frequency = "semiannually"
 
 [tool.compwa.policy.python]
 type-checker = ["ty"]
+
+[tool.docstrfmt]
+docstring-trailing-line = false
+format-python-code-blocks = false
 
 [tool.lychee]
 cache = true
@@ -135,7 +140,7 @@ key-empty = "off"
 
 [[tool.tombi.schemas]]
 root = "tool.compwa.policy"
-path = "https://raw.githubusercontent.com/ComPWA/policy/0.10.3/compwa-policy.schema.json"
+path = "https://raw.githubusercontent.com/ComPWA/policy/0.10.4/compwa-policy.schema.json"
 include = ["pyproject.toml"]
 
 [tool.ty.rules]
