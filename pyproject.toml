@@ -43,6 +43,8 @@ type-checker = ["ty"]
 
 [tool.lychee]
 cache = true
+cache_exclude_status = "400.."
+# [:] keeps Lychee from extracting regex patterns as URLs.
 exclude = [
     # `[:]` stops lychee from extracting these patterns as links from this file.
     '^https[:]//github\.com/%7B(?:TEMPLATE_REPOSITORY|answers\.repository)%7D$',  # Python f-strings in the bootstrap script
@@ -65,27 +67,9 @@ extensions = [
 hidden = true  # Include the workflows under .github/
 include_fragments = "anchor-only"
 include_verbatim = true
-max_cache_age = "2d"
+max_cache_age = "7d"
 max_concurrency = 10
-max_redirects = 0
-max_retries = 3
 no_progress = true
-remap = [
-    # `[:]` stops lychee from extracting these patterns as links from this file.
-    '^https[:]//astral\.sh/uv/install\.ps1$ https://releases.astral.sh/installers/uv/latest/uv-installer.ps1',
-    '^https[:]//astral\.sh/uv/install\.sh$ https://releases.astral.sh/installers/uv/latest/uv-installer.sh',
-    '^https[:]//docs\.astral\.sh/uv/getting-started/installation$ https://docs.astral.sh/uv/getting-started/installation/',
-    '^https[:]//docs\.astral\.sh/uv$ https://docs.astral.sh/uv/',
-    '^https[:]//markenportal\.ruhr-uni-bochum\.de/corporate-design$ https://markenportal.ruhr-uni-bochum.de/corporate-design/',
-    '^https[:]//pixi\.sh/$ https://pixi.prefix.dev/',
-    '^https[:]//pixi\.sh/install\.ps1$ https://pixi.prefix.dev/install.ps1',
-    '^https[:]//pixi\.sh/install\.sh$ https://pixi.prefix.dev/install.sh',
-    '^https[:]//pixi\.sh/latest/installation$ https://pixi.prefix.dev/latest/installation/',
-    '^https[:]//redeboer\.github\.io/phd-thesis-template/rub$ https://redeboer.github.io/phd-thesis-template/rub/',
-    '^https[:]//redeboer\.github\.io/phd-thesis-template$ https://redeboer.github.io/phd-thesis-template/',
-]
-retry_wait_time = 5
-timeout = 30
 user_agent = "Mozilla/5.0 (compatible; lychee)"
 
 [tool.ruff]
