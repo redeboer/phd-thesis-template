@@ -50,7 +50,6 @@ format-python-code-blocks = false
 [tool.lychee]
 cache = true
 cache_exclude_status = "400.."
-# [:] keeps Lychee from extracting regex patterns as URLs.
 exclude = [
     # `[:]` stops lychee from extracting these patterns as links from this file.
     '^file[:]//.*/docs/themes/rub/fonts/RUBInter-(?:ExtraBold|Italic|Regular|SemiBold)\.ttf$',  # Downloaded by the RUB build
