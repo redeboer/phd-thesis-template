@@ -29,6 +29,7 @@ package-manager = "pixi+uv"
 no-cspell-update = true
 
 [tool.compwa.policy.github]
+dependabot-assignees = ["redeboer"]
 doc-apt-packages = [
     "texlive-fonts-extra",
     "texlive-latex-extra",
