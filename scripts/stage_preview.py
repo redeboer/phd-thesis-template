@@ -46,13 +46,15 @@ def main() -> None:
     index = output / "html" / "index.html"
     html = index.read_text(encoding="utf-8")
     if 'id="rub-preview"' not in html:
-        marker = '<main class="content" id="quarto-document-content">'
-        if html.count(marker) != 1:
+        html, count = re.subn(
+            r'<main\b[^>]*\sid="quarto-document-content"[^>]*>',
+            lambda match: f"{match[0]}\n{CALLOUT}",
+            html,
+        )
+        if count != 1:
             message = "Cannot locate the main content of the general landing page"
             raise RuntimeError(message)
-        index.write_text(
-            html.replace(marker, marker + "\n" + CALLOUT, 1), encoding="utf-8"
-        )
+        index.write_text(html, encoding="utf-8")
     write_summary(site_url)
 
 

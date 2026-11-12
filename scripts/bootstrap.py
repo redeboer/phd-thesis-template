@@ -614,8 +614,8 @@ def configure_rub(path: Path, answers: Answers) -> str:
 def remove_rub_tasks(text: str, path: Path) -> str:
     """Remove the Pixi tasks that build the optional RUB variant.
 
-    Both profiles drop these tasks: the RUB profile turns the standard tasks into
-    RUB builds, and the general profile removes the RUB variant altogether.
+    Both profiles drop these tasks: the RUB profile turns the standard tasks into RUB
+    builds, and the general profile removes the RUB variant altogether.
     """
     text = remove_sequence_item(text, path, table="tasks.doc", item="rub")
     for task in ("rub", "rub-hardcover", "rub-html", "rub-paperback"):
@@ -681,9 +681,9 @@ def select_branches(lines: list[str], *, keep_rub: bool) -> tuple[list[str], int
 def configure_index(path: Path) -> None:
     """Replace the landing page about the template with a preface for the thesis.
 
-    The pristine landing page explains what the template is to visitors of its
-    published website. That explanation is meaningless in a bootstrapped thesis, so
-    the whole page is rewritten instead of having its placeholders substituted.
+    The pristine landing page explains what the template is to visitors of its published
+    website. That explanation is meaningless in a bootstrapped thesis, so the whole page
+    is rewritten instead of having its placeholders substituted.
     """
     text = path.read_text(encoding="utf-8")
     if TEMPLATE_INDEX_HEADING not in text:
